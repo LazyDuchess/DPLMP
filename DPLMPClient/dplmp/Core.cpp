@@ -1,6 +1,8 @@
-#include "../pch.h"
+#include "../framework.h"
 #include "Core.h"
 #include "Hooking.h"
+#include "ClientController.h"
+#include <iostream>
 
 namespace Core {
 	void __declspec(naked) ReturnEarly() {
@@ -48,6 +50,11 @@ namespace Core {
 	}
 
 	void Initialize() {
+		AllocConsole();
+		freopen("CONIN$", "r", stdin);
+		freopen("CONOUT$", "w", stdout);
+		freopen("CONOUT$", "w", stderr);
+
 		// REMOVE TRAFFIC HOOKS
 		// 
 		// createtrafficpedestrian?
@@ -67,5 +74,8 @@ namespace Core {
 		//
 		// Force 1.0 time multiplier always
 		Hooking::MakeJMP((BYTE*)0x0045ace8, (DWORD)SetGameSpeedMultiplierHook, 6);
+
+		auto clientController = ClientController::GetInstance();
+		clientController.Connect();
 	}
 }

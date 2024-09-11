@@ -1,4 +1,4 @@
-#include "../pch.h"
+#include "../framework.h"
 #include "Hooking.h"
 
 namespace Hooking {
