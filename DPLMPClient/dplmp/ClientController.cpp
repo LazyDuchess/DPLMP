@@ -13,7 +13,7 @@ void ConnectThread() {
 	RakNet::SocketDescriptor socketDescriptor(0, 0);
 	socketDescriptor.socketFamily = AF_INET;
 	RakNet::StartupResult sr;
-	sr = client->Startup(4, &socketDescriptor, 1, THREAD_PRIORITY_NORMAL);
+	sr = client->Startup(4, &socketDescriptor, 1);
 	if (sr != RakNet::RAKNET_STARTED)
 	{
 		printf("Client failed to start. Error=%i\n", sr);
