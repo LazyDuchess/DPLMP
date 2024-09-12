@@ -7,7 +7,6 @@
 
 
 std::vector<EventListener*> eventListeners;
-ClientController* Core::_clientController = new ClientController();
 bool Core::InGame = false;
 
 void __declspec(naked) ReturnEarly() {
@@ -178,10 +177,6 @@ void __declspec(naked) CreatePlayerHook() {
 	}
 }
 
-ClientController* Core::GetClientController() {
-	return Core::_clientController;
-}
-
 void Core::Initialize() {
 	AllocConsole();
 	freopen("CONIN$", "r", stdin);
@@ -218,7 +213,7 @@ void Core::Initialize() {
 	// CLifeSystem::Initialise Entering ingame state
 	Hooking::MakeJMP((BYTE*)0x004720bf, (DWORD)EnterInGameStateHook, 5);
 
-	RegisterEventListener(Core::_clientController);
+	RegisterEventListener(ClientController::GetInstance());
 }
 
 void Core::RegisterEventListener(EventListener* listener) {

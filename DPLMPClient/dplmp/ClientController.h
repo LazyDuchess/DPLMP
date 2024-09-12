@@ -6,7 +6,7 @@
 class ClientController : public EventListener {
 public:
 	ClientController();
-	ClientController* GetInstance();
+	static ClientController* GetInstance();
 	void OnPlayerCreated();
 	void OnEnterInGameState();
 	void OnExitInGameState();
@@ -17,7 +17,7 @@ public:
 	RakNet::RakPeerInterface* Client;
 	RakNet::SystemAddress ServerAddress;
 private:
-	ClientController* _instance;
+	static ClientController* _instance;
 	TimeController* _timeController;
 	void HandlePackets();
 };
