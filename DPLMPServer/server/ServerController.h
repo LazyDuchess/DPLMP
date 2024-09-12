@@ -11,7 +11,6 @@ public:
 	}
 	void Connect();
 	void Step();
-	void Broadcast(const RakNet::BitStream* bitStream, PacketPriority priority, PacketReliability reliability, char orderingChannel);
 	RakNet::RakPeerInterface* Server;
 
 private:

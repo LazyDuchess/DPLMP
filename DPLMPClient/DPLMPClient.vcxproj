@@ -61,7 +61,7 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_DEBUG;DPLMPCLIENT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../thirdparty/RakNet/Source;../DPLMPCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../thirdparty/RakNet/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -80,7 +80,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../thirdparty/RakNet/Source;../DPLMPCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../thirdparty/RakNet/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
@@ -254,7 +254,6 @@
     <ClInclude Include="dplmp\EventListener.h" />
     <ClInclude Include="dpl\CLifeEnvironment.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="dplmp\TimeController.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\thirdparty\RakNet\Source\Base64Encoder.cpp" />
@@ -381,7 +380,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="dpl\CLifeEnvironment.cpp" />
-    <ClCompile Include="dplmp\TimeController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\thirdparty\RakNet\Source\RakNet.vcproj" />

@@ -46,7 +46,3 @@ void ServerController::Step() {
 	HandlePackets();
 	_timeController->Step();
 }
-
-void ServerController::Broadcast(const RakNet::BitStream *bitStream, PacketPriority priority, PacketReliability reliability, char orderingChannel) {
-	Server->Send(bitStream, priority, reliability, reliability, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
-}
