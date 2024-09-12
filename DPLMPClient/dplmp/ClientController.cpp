@@ -5,7 +5,7 @@
 #include "Core.h"
 #include <stdio.h>
 #include <mutex>
-#include "PLMessageIdentifiers.h"
+#include "../../DPLMPCommon/PLMessageIdentifiers.h"
 
 std::mutex connectionMutex;
 
@@ -15,34 +15,29 @@ ClientController::ClientController() {
 	ServerAddress = RakNet::UNASSIGNED_SYSTEM_ADDRESS;
 }
 
-void ConnectThread() {
-	ClientController* clientController = Core::GetClientController();
-	clientController->Client = RakNet::RakPeerInterface::GetInstance();
-	clientController->Client->SetTimeoutTime(5000, RakNet::UNASSIGNED_SYSTEM_ADDRESS);
-	clientController->ServerAddress.SetBinaryAddress("127.0.0.1");
-	clientController->ServerAddress.SetPortHostOrder(7126);
+void ClientController::Connect() {
+	Client = RakNet::RakPeerInterface::GetInstance();
+	Client->SetTimeoutTime(5000, RakNet::UNASSIGNED_SYSTEM_ADDRESS);
+	ServerAddress.SetBinaryAddress("127.0.0.1");
+	ServerAddress.SetPortHostOrder(7126);
 
 	RakNet::SocketDescriptor socketDescriptor(0, 0);
 	socketDescriptor.socketFamily = AF_INET;
 	RakNet::StartupResult sr;
-	sr = clientController->Client->Startup(4, &socketDescriptor, 1);
+	sr = Client->Startup(4, &socketDescriptor, 1);
 	if (sr != RakNet::RAKNET_STARTED)
 	{
 		printf("Client failed to start. Error=%i\n", sr);
 	}
 
-	printf("Started client on %s\n", clientController->Client->GetMyBoundAddress().ToString(true));
+	printf("Started client on %s\n", Client->GetMyBoundAddress().ToString(true));
 
-	RakNet::ConnectionAttemptResult result = clientController->Client->Connect("127.0.0.1", 7126, 0, 0);
-	while (clientController->GetConnectionState() == RakNet::ConnectionState::IS_CONNECTING || clientController->GetConnectionState() == RakNet::ConnectionState::IS_PENDING)
+	RakNet::ConnectionAttemptResult result = Client->Connect("127.0.0.1", 7126, 0, 0);
+	while (GetConnectionState() == RakNet::ConnectionState::IS_CONNECTING || GetConnectionState() == RakNet::ConnectionState::IS_PENDING)
 	{
 		RakSleep(100);
 	}
-	printf("Connection state: %i\n", clientController->GetConnectionState());
-}
-
-void ClientController::Connect() {
-	auto threadHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ConnectThread, 0, 0, 0);
+	printf("Connection state: %i\n", GetConnectionState());
 }
 
 void ClientController::Disconnect() {

@@ -1,12 +1,12 @@
 #pragma once
-#define TIMESTEP 1.0
+#define TIMESTEP 0.016
 #define PACKETINTERVAL 3.0
 
 class TimeController {
 public:
 	TimeController();
 	void Step();
-	float LifeTime;
+	float CurrentHour;
 	float TimeStep;
 private:
 	float _packetTimer;

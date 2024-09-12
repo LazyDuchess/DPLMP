@@ -1,18 +1,21 @@
 #include "TimeController.h"
-#include "PLMessageIdentifiers.h"
+#include "../../DPLMPCommon/PLMessageIdentifiers.h"
 #include "BitStream.h"
 #include "../dpl/CLifeEnvironment.h"
 #include "Core.h"
+#include "../../DPLMPCommon/TimeCommon.h"
 
 TimeController::TimeController() {
 	_timeStep = 0.0;
+	_currentHour = 0.0;
 }
 
 void TimeController::Step() {
 	auto env = CLifeEnvironment::GetInstance();
 	if (env == nullptr) return;
 	env->TimeStep = 0.0;
-	env->LifeTime += _timeStep * Core::FixedDeltaTime;
+	_currentHour = ClampHours(_currentHour + (_timeStep * Core::FixedDeltaTime));
+	env->LifeTime = HoursToLifeTime(_currentHour);
 }
 
 void TimeController::HandlePacket(RakNet::Packet* packet) {
@@ -25,6 +28,6 @@ void TimeController::HandlePacket(RakNet::Packet* packet) {
 	bs.IgnoreBytes(1);
 	bs.Read(timeValue);
 	bs.Read(timeStep);
-	env->LifeTime = timeValue;
+	_currentHour = timeValue;
 	_timeStep = timeStep;
 }

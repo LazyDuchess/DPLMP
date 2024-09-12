@@ -4,15 +4,16 @@
 #include "PLMessageIdentifiers.h"
 #include "BitStream.h"
 #include "ServerController.h"
+#include "TimeCommon.h"
 
 TimeController::TimeController() {
-	LifeTime = 0.0;
+	CurrentHour = 0.0;
 	TimeStep = TIMESTEP;
 	_packetTimer = 0.0;
 }
 
 void TimeController::Step() {
-	LifeTime += TimeStep * Core::FixedDeltaTime;
+	CurrentHour = ClampHours(CurrentHour + (TimeStep * Core::FixedDeltaTime));
 	_packetTimer += Core::FixedDeltaTime;
 	if (_packetTimer >= PACKETINTERVAL) {
 		SendTimePacket();
@@ -23,7 +24,7 @@ void TimeController::Step() {
 void TimeController::SendTimePacket() {
 	RakNet::BitStream bs;
 	bs.Write((unsigned char) ID_TIMEOFDAY);
-	bs.Write(LifeTime);
+	bs.Write(CurrentHour);
 	bs.Write(TimeStep);
 	ServerController::GetInstance().Broadcast(&bs, PacketPriority::LOW_PRIORITY, PacketReliability::UNRELIABLE, 0);
 }

@@ -8,4 +8,5 @@ public:
 	void Step();
 private:
 	float _timeStep;
+	float _currentHour;
 };
