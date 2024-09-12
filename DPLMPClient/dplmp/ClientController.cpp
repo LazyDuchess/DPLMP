@@ -11,7 +11,7 @@ std::mutex connectionMutex;
 
 void ConnectThread() {
 	connectionMutex.lock();
-	auto clientController = Core::GetClientController();
+	ClientController* clientController = Core::GetClientController();
 	clientController->Client = RakNet::RakPeerInterface::GetInstance();
 	clientController->Client->SetTimeoutTime(5000, RakNet::UNASSIGNED_SYSTEM_ADDRESS);
 	clientController->ServerAddress.SetBinaryAddress("127.0.0.1");
