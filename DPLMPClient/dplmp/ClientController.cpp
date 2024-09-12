@@ -9,14 +9,8 @@
 #include "PLMessageIdentifiers.h"
 
 std::mutex connectionMutex;
-ClientController* ClientController::_instance = new ClientController();
-
-ClientController* ClientController::GetInstance() {
-	return _instance;
-}
 
 ClientController::ClientController() {
-	_instance = this;
 	Client = nullptr;
 	ServerAddress = nullptr;
 	_timeController = new TimeController();
@@ -24,7 +18,7 @@ ClientController::ClientController() {
 
 void ConnectThread() {
 	connectionMutex.lock();
-	auto clientController = ClientController::GetInstance();
+	auto clientController = Core::GetClientController();
 	clientController->Client = RakNet::RakPeerInterface::GetInstance();
 	clientController->Client->SetTimeoutTime(5000, RakNet::UNASSIGNED_SYSTEM_ADDRESS);
 	clientController->ServerAddress.SetBinaryAddress("127.0.0.1");

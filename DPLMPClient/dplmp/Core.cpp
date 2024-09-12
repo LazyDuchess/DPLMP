@@ -8,6 +8,11 @@
 
 std::vector<EventListener*> eventListeners;
 bool Core::InGame = false;
+ClientController* Core::_clientController = new ClientController();
+
+ClientController* Core::GetClientController() {
+	return _clientController;
+}
 
 void __declspec(naked) ReturnEarly() {
 	__asm {
@@ -213,7 +218,7 @@ void Core::Initialize() {
 	// CLifeSystem::Initialise Entering ingame state
 	Hooking::MakeJMP((BYTE*)0x004720bf, (DWORD)EnterInGameStateHook, 5);
 
-	RegisterEventListener(ClientController::GetInstance());
+	RegisterEventListener(_clientController);
 }
 
 void Core::RegisterEventListener(EventListener* listener) {
