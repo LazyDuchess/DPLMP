@@ -1,9 +1,12 @@
 #pragma once
 #include "RakPeerInterface.h"
 #include "EventListener.h"
+#include "TimeController.h"
 
 class ClientController : public EventListener {
 public:
+	ClientController();
+	ClientController* GetInstance();
 	void OnPlayerCreated();
 	void OnEnterInGameState();
 	void OnExitInGameState();
@@ -13,4 +16,8 @@ public:
 	RakNet::ConnectionState GetConnectionState();
 	RakNet::RakPeerInterface* Client;
 	RakNet::SystemAddress ServerAddress;
+private:
+	ClientController* _instance;
+	TimeController* _timeController;
+	void HandlePackets();
 };

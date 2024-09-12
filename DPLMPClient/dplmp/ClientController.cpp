@@ -6,8 +6,20 @@
 #include <stdio.h>
 #include <mutex>
 #include "../dpl/CLifeEnvironment.h"
+#include "PLMessageIdentifiers.h"
 
 std::mutex connectionMutex;
+
+ClientController* ClientController::GetInstance() {
+	return _instance;
+}
+
+ClientController::ClientController() {
+	Client = nullptr;
+	ServerAddress = nullptr;
+	_instance = this;
+	_timeController = new TimeController();
+}
 
 void ConnectThread() {
 	connectionMutex.lock();
@@ -69,7 +81,17 @@ void ClientController::OnExitInGameState() {
 	Disconnect();
 }
 
+void ClientController::HandlePackets() {
+	RakNet::Packet* packet;
+	for (packet = Client->Receive(); packet; Client->DeallocatePacket(packet), packet = Client->Receive())
+	{
+		if (packet->data[0] == ID_TIMEOFDAY)
+			_timeController->HandlePacket(packet);
+	}
+}
+
 void ClientController::Step() {
+	HandlePackets();
 	if (!Core::InGame) return;
 	auto env = CLifeEnvironment::GetInstance();
 	if (env == nullptr) return;

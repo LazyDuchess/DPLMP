@@ -9,4 +9,5 @@ public:
 	float LifeTime;
 private:
 	float _packetTimer;
+	void SendTimePacket();
 };
