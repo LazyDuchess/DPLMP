@@ -44,10 +44,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>Debug\</OutDir>
     <IntDir>Debug\</IntDir>
+    <TargetExt>.asi</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>Release\</OutDir>
     <IntDir>Release\</IntDir>
+    <TargetExt>.asi</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -249,6 +251,7 @@
     <ClInclude Include="dplmp\ClientController.h" />
     <ClInclude Include="dplmp\Core.h" />
     <ClInclude Include="dplmp\Hooking.h" />
+    <ClInclude Include="dplmp\EventListener.h" />
     <ClInclude Include="framework.h" />
   </ItemGroup>
   <ItemGroup>

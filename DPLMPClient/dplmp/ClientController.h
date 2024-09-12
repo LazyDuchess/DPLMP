@@ -1,14 +1,15 @@
 #pragma once
 #include "RakPeerInterface.h"
+#include "EventListener.h"
 
-class ClientController {
+class ClientController : public EventListener {
 public:
-	static ClientController& GetInstance() {
-		static ClientController instance;
-		return instance;
-	}
+	void OnPlayerCreated();
+	void OnEnterInGameState();
+	void OnExitInGameState();
 	void Connect();
-	void GameJoined();
-	void Step();
+	void Disconnect();
+	RakNet::ConnectionState GetConnectionState();
 	RakNet::RakPeerInterface* Client;
+	RakNet::SystemAddress ServerAddress;
 };

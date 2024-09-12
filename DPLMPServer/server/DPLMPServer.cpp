@@ -2,11 +2,15 @@
 //
 
 #include "DPLMPServer.h"
+#include "Core.h"
 
 using namespace std;
 
 int main()
 {
-	cout << "Hello CMake." << endl;
+	Core::Initialize();
+	while (true) {
+		Core::Step();
+	}
 	return 0;
 }
