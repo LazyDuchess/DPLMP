@@ -71,11 +71,11 @@ void ClientController::Step() {
 	HandlePackets();
 	_timeController->Step();
 	// EXPERIMENTS
+	/* Crashes when going near a side mission area. Might work if the save has no side missions available?
 	if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))
 	{
 		CLifeEventDataManager::GetInstance()->EndAllLifeEvents();
-		CLifeInstances::GetInstance()->RemoveAll();
-	}
+	}*/
 }
 
 void ClientController::OnPlayerCreated() {
@@ -86,6 +86,12 @@ void ClientController::OnEnterInGameState() {
     printf("Now In-Game!\n");
     SpoolableResourceManager::GetInstance()->SetEntityPriority(SpooledPackageType::Characters, 123, SpoolPriority::Request);
     CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->SwapSkin(123, 123);
+	D3DMATRIX* playerMatrix = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetMatrix();
+	printf("Player Matrix:\n");
+	printf("1: %f %f %f %f\n", playerMatrix->_11, playerMatrix->_12, playerMatrix->_13, playerMatrix->_14);
+	printf("1: %f %f %f %f\n", playerMatrix->_21, playerMatrix->_22, playerMatrix->_23, playerMatrix->_24);
+	printf("1: %f %f %f %f\n", playerMatrix->_31, playerMatrix->_32, playerMatrix->_33, playerMatrix->_34);
+	printf("1: %f %f %f %f\n", playerMatrix->_41, playerMatrix->_42, playerMatrix->_43, playerMatrix->_44);
     Connect();
 }
 

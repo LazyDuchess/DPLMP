@@ -7,7 +7,7 @@
 #include "TimeCommon.h"
 
 TimeController::TimeController() {
-	CurrentHour = 0.0;
+	CurrentHour = 8.0;
 	TimeStep = TIMESTEP;
 	_packetTimer = 0.0;
 }
