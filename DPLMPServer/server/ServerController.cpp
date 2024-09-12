@@ -4,10 +4,6 @@
 #include "RakSleep.h"
 #include <stdio.h>
 
-ServerController::ServerController() {
-	_timeController = new TimeController();
-}
-
 void ServerController::Connect() {
 	Server = RakNet::RakPeerInterface::GetInstance();
 	printf("Working as server\n");
@@ -44,5 +40,4 @@ void ServerController::HandlePackets() {
 
 void ServerController::Step() {
 	HandlePackets();
-	_timeController->Step();
 }

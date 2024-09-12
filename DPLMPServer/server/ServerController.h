@@ -1,10 +1,8 @@
 #pragma once
 #include "RakPeerInterface.h"
-#include "TimeController.h"
 
 class ServerController {
 public:
-	ServerController();
 	static ServerController& GetInstance() {
 		static ServerController instance;
 		return instance;
@@ -15,5 +13,4 @@ public:
 
 private:
 	void HandlePackets();
-	TimeController* _timeController;
 };

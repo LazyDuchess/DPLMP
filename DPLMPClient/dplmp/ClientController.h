@@ -9,7 +9,6 @@ public:
 	void OnExitInGameState();
 	void Connect();
 	void Disconnect();
-	void Step();
 	RakNet::ConnectionState GetConnectionState();
 	RakNet::RakPeerInterface* Client;
 	RakNet::SystemAddress ServerAddress;
