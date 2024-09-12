@@ -6,8 +6,8 @@
 #include <vector>
 
 
-std::vector<std::shared_ptr<EventListener>> eventListeners;
-std::shared_ptr<ClientController> Core::_clientController = std::make_shared<ClientController>();
+std::vector<EventListener*> eventListeners;
+ClientController* Core::_clientController = new ClientController();
 bool Core::InGame = false;
 
 void __declspec(naked) ReturnEarly() {
@@ -178,7 +178,7 @@ void __declspec(naked) CreatePlayerHook() {
 	}
 }
 
-std::shared_ptr<ClientController> Core::GetClientController() {
+ClientController* Core::GetClientController() {
 	return Core::_clientController;
 }
 
@@ -221,6 +221,6 @@ void Core::Initialize() {
 	RegisterEventListener(Core::_clientController);
 }
 
-void Core::RegisterEventListener(std::shared_ptr<EventListener> listener) {
+void Core::RegisterEventListener(EventListener* listener) {
 	eventListeners.push_back(listener);
 }

@@ -5,6 +5,7 @@
 # Add source to this project's executable.
 # add_executable (DPLMPServer "DPLMPServer.cpp" "DPLMPServer.h")
 include_directories("server/")
+include_directories("../DPLMPCommon/")
 file(GLOB SOURCES "server/*.cpp")
 add_executable(DPLMPServer  ${SOURCES})
 

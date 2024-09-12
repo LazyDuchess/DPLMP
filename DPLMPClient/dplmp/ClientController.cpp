@@ -5,9 +5,9 @@
 #include "Core.h"
 #include <stdio.h>
 #include <mutex>
+#include "../dpl/CLifeEnvironment.h"
 
 std::mutex connectionMutex;
-
 
 void ConnectThread() {
 	connectionMutex.lock();
@@ -67,4 +67,11 @@ void ClientController::OnEnterInGameState() {
 void ClientController::OnExitInGameState() {
 	printf("No longer In-Game!\n");
 	Disconnect();
+}
+
+void ClientController::Step() {
+	if (!Core::InGame) return;
+	auto env = CLifeEnvironment::GetInstance();
+	if (env == nullptr) return;
+	printf("Current time: %f\n", env->LifeTime);
 }
