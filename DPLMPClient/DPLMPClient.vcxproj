@@ -255,7 +255,16 @@
     <ClInclude Include="dplmp\Core.h" />
     <ClInclude Include="dplmp\Hooking.h" />
     <ClInclude Include="dplmp\EventListener.h" />
+    <ClInclude Include="dpl\CCharacter.h" />
     <ClInclude Include="dpl\CLifeEnvironment.h" />
+    <ClInclude Include="dpl\CLifeEventDataManager.h" />
+    <ClInclude Include="dpl\CLifeInstances.h" />
+    <ClInclude Include="dpl\CLifePlayer.h" />
+    <ClInclude Include="dpl\CLifeSystem.h" />
+    <ClInclude Include="dpl\CPlayerDriverBehaviour.h" />
+    <ClInclude Include="dpl\SpoolableResourceManager.h" />
+    <ClInclude Include="dpl\SpooledPackageType.h" />
+    <ClInclude Include="dpl\SpoolPriority.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="dplmp\TimeController.h" />
   </ItemGroup>
@@ -383,8 +392,14 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="dpl\CCharacter.cpp" />
     <ClCompile Include="dpl\CLifeEnvironment.cpp" />
     <ClCompile Include="dplmp\TimeController.cpp" />
+    <ClCompile Include="dpl\CLifeEventDataManager.cpp" />
+    <ClCompile Include="dpl\CLifeInstances.cpp" />
+    <ClCompile Include="dpl\CLifeSystem.cpp" />
+    <ClCompile Include="dpl\CPlayerDriverBehaviour.cpp" />
+    <ClCompile Include="dpl\SpoolableResourceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\thirdparty\RakNet\Source\RakNet.vcproj" />

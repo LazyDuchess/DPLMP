@@ -6,6 +6,10 @@
 #include <stdio.h>
 #include <mutex>
 #include "../../DPLMPCommon/PLMessageIdentifiers.h"
+#include "../dpl/CLifeSystem.h"
+#include "../dpl/SpoolableResourceManager.h"
+#include "../dpl/CLifeEventDataManager.h"
+#include "../dpl/CLifeInstances.h"
 
 std::mutex connectionMutex;
 
@@ -66,6 +70,12 @@ void ClientController::HandlePackets() {
 void ClientController::Step() {
 	HandlePackets();
 	_timeController->Step();
+	// EXPERIMENTS
+	if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))
+	{
+		CLifeEventDataManager::GetInstance()->EndAllLifeEvents();
+		CLifeInstances::GetInstance()->RemoveAll();
+	}
 }
 
 void ClientController::OnPlayerCreated() {
@@ -73,8 +83,10 @@ void ClientController::OnPlayerCreated() {
 }
 
 void ClientController::OnEnterInGameState() {
-	printf("Now In-Game!\n");
-	Connect();
+    printf("Now In-Game!\n");
+    SpoolableResourceManager::GetInstance()->SetEntityPriority(SpooledPackageType::Characters, 123, SpoolPriority::Request);
+    CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->SwapSkin(123, 123);
+    Connect();
 }
 
 void ClientController::OnExitInGameState() {
