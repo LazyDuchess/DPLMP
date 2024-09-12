@@ -7,11 +7,12 @@
 
 TimeController::TimeController() {
 	LifeTime = 0.0;
+	TimeStep = TIMESTEP;
 	_packetTimer = 0.0;
 }
 
 void TimeController::Step() {
-	LifeTime += TIMESTEP * Core::FixedDeltaTime;
+	LifeTime += TimeStep * Core::FixedDeltaTime;
 	_packetTimer += Core::FixedDeltaTime;
 	if (_packetTimer >= PACKETINTERVAL) {
 		SendTimePacket();
@@ -23,5 +24,6 @@ void TimeController::SendTimePacket() {
 	RakNet::BitStream bs;
 	bs.Write((unsigned char) ID_TIMEOFDAY);
 	bs.Write(LifeTime);
+	bs.Write(TimeStep);
 	ServerController::GetInstance().Broadcast(&bs, PacketPriority::LOW_PRIORITY, PacketReliability::UNRELIABLE, 0);
 }

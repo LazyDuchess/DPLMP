@@ -5,20 +5,18 @@
 #include "Core.h"
 #include <stdio.h>
 #include <mutex>
-#include "../dpl/CLifeEnvironment.h"
 #include "PLMessageIdentifiers.h"
 
 std::mutex connectionMutex;
 
 ClientController::ClientController() {
-	Client = nullptr;
-	ServerAddress = nullptr;
 	_timeController = new TimeController();
+	Client = nullptr;
+	ServerAddress = RakNet::UNASSIGNED_SYSTEM_ADDRESS;
 }
 
 void ConnectThread() {
-	connectionMutex.lock();
-	auto clientController = Core::GetClientController();
+	ClientController* clientController = Core::GetClientController();
 	clientController->Client = RakNet::RakPeerInterface::GetInstance();
 	clientController->Client->SetTimeoutTime(5000, RakNet::UNASSIGNED_SYSTEM_ADDRESS);
 	clientController->ServerAddress.SetBinaryAddress("127.0.0.1");
@@ -41,7 +39,6 @@ void ConnectThread() {
 		RakSleep(100);
 	}
 	printf("Connection state: %i\n", clientController->GetConnectionState());
-	connectionMutex.unlock();
 }
 
 void ClientController::Connect() {
@@ -49,17 +46,31 @@ void ClientController::Connect() {
 }
 
 void ClientController::Disconnect() {
-	connectionMutex.lock();
 	if (Client == nullptr)
 		return;
 	Client->CloseConnection(ServerAddress, true);
-	connectionMutex.unlock();
 }
 
 RakNet::ConnectionState ClientController::GetConnectionState() {
 	if (Client == nullptr)
 		return RakNet::IS_NOT_CONNECTED;
 	return Client->GetConnectionState(ServerAddress);
+}
+
+void ClientController::HandlePackets() {
+	if (GetConnectionState() == RakNet::IS_CONNECTED) {
+		RakNet::Packet* packet;
+		for (packet = Client->Receive(); packet; Client->DeallocatePacket(packet), packet = Client->Receive())
+		{
+			if (packet->data[0] == ID_TIMEOFDAY)
+				_timeController->HandlePacket(packet);
+		}
+	}
+}
+
+void ClientController::Step() {
+	HandlePackets();
+	_timeController->Step();
 }
 
 void ClientController::OnPlayerCreated() {
@@ -74,21 +85,4 @@ void ClientController::OnEnterInGameState() {
 void ClientController::OnExitInGameState() {
 	printf("No longer In-Game!\n");
 	Disconnect();
-}
-
-void ClientController::HandlePackets() {
-	RakNet::Packet* packet;
-	for (packet = Client->Receive(); packet; Client->DeallocatePacket(packet), packet = Client->Receive())
-	{
-		if (packet->data[0] == ID_TIMEOFDAY)
-			_timeController->HandlePacket(packet);
-	}
-}
-
-void ClientController::Step() {
-	HandlePackets();
-	if (!Core::InGame) return;
-	auto env = CLifeEnvironment::GetInstance();
-	if (env == nullptr) return;
-	printf("Current time: %f\n", env->LifeTime);
 }

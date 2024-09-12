@@ -16,6 +16,6 @@ public:
 	RakNet::RakPeerInterface* Client;
 	RakNet::SystemAddress ServerAddress;
 private:
-	TimeController* _timeController;
 	void HandlePackets();
+	TimeController* _timeController;
 };

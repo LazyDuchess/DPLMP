@@ -4,15 +4,17 @@
 #include "ClientController.h"
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include "CommonDefines.h"
 
 
 std::vector<EventListener*> eventListeners;
-bool Core::InGame = false;
 ClientController* Core::_clientController = new ClientController();
+bool Core::InGame = false;
 
-ClientController* Core::GetClientController() {
-	return _clientController;
-}
+typedef std::chrono::steady_clock steady_clock;
+float Core::FixedDeltaTime = 0.0;
+steady_clock::time_point beginTimePoint;
 
 void __declspec(naked) ReturnEarly() {
 	__asm {
@@ -51,7 +53,7 @@ void __declspec(naked) CreatePedsHook() {
 
 void __declspec(naked) SetGameSpeedMultiplierHook() {
 	__asm {
-		mov dword ptr [esp + 04], 0x3f800000
+		mov dword ptr[esp + 04], 0x3f800000
 		movss xmm0, [esp + 04]
 		mov eax, 0x0045ACEE
 		jmp eax
@@ -59,12 +61,17 @@ void __declspec(naked) SetGameSpeedMultiplierHook() {
 }
 
 void __stdcall OnGameStepHook() {
-	for (auto listener : eventListeners) {
-		listener->Step();
+	std::chrono::duration<float> delta = steady_clock::now() - beginTimePoint;
+	Core::FixedDeltaTime = delta.count();
+	if (Core::FixedDeltaTime >= TICKRATE) {
+		for (auto listener : eventListeners) {
+			listener->Step();
+		}
+		beginTimePoint = steady_clock::now();
 	}
 }
 
-void __stdcall OnPlayerCreatedHook(){
+void __stdcall OnPlayerCreatedHook() {
 	for (auto listener : eventListeners) {
 		listener->OnPlayerCreated();
 	}
@@ -182,6 +189,10 @@ void __declspec(naked) CreatePlayerHook() {
 	}
 }
 
+ClientController* Core::GetClientController() {
+	return Core::_clientController;
+}
+
 void Core::Initialize() {
 	AllocConsole();
 	freopen("CONIN$", "r", stdin);
@@ -200,7 +211,7 @@ void Core::Initialize() {
 	Hooking::MakeJMP((BYTE*)0x00412C1A, (DWORD)AIVehicleManagerHook, 5);
 	// jump over cop vehicle creation
 	Hooking::MakeJMP((BYTE*)0x0040FC04, (DWORD)CreateCopVehicleHook, 5);
-		// jump over scripted ped creation
+	// jump over scripted ped creation
 	Hooking::MakeJMP((BYTE*)0x004488D0, (DWORD)CreatePedsHook, 5);
 
 	// Game Time Hooks
@@ -214,11 +225,11 @@ void Core::Initialize() {
 	// GameStep? - Main game loop.
 	Hooking::MakeJMP((BYTE*)0x00545aa3, (DWORD)GameStepHook, 6);
 	// DestroyInGameStuff? Exiting ingame state
-	Hooking::MakeJMP((BYTE*)0x004723fc, (DWORD)ExitInGameStateHook,5);
+	Hooking::MakeJMP((BYTE*)0x004723fc, (DWORD)ExitInGameStateHook, 5);
 	// CLifeSystem::Initialise Entering ingame state
 	Hooking::MakeJMP((BYTE*)0x004720bf, (DWORD)EnterInGameStateHook, 5);
 
-	RegisterEventListener(_clientController);
+	RegisterEventListener(Core::_clientController);
 }
 
 void Core::RegisterEventListener(EventListener* listener) {

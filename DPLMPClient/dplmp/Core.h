@@ -2,13 +2,15 @@
 #include "EventListener.h"
 #include "ClientController.h"
 #include <vector>
+#include <memory>
 
 class Core {
 public:
-	static ClientController* GetClientController();
 	static bool InGame;
+	static ClientController* GetClientController();
 	static void Initialize();
 	static void RegisterEventListener(EventListener* listener);
+	static float FixedDeltaTime;
 private:
 	static ClientController* _clientController;
 };
