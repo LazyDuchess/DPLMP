@@ -5,7 +5,6 @@
 #include <stdio.h>
 
 ServerController::ServerController() {
-	Server = nullptr;
 	_timeController = new TimeController();
 }
 
