@@ -6,6 +6,7 @@
 #include <vector>
 #include <chrono>
 #include "../../DPLMPCommon/CommonDefines.h"
+#include "../dpl/CLifeEventDataManager.h"
 
 
 std::vector<EventListener*> eventListeners;
@@ -198,6 +199,7 @@ void Core::Initialize() {
 	freopen("CONIN$", "r", stdin);
 	freopen("CONOUT$", "w", stdout);
 	freopen("CONOUT$", "w", stderr);
+	static char jmpByte = 0xEB;
 
 	// REMOVE TRAFFIC HOOKS
 	// 
@@ -228,10 +230,23 @@ void Core::Initialize() {
 	Hooking::MakeJMP((BYTE*)0x004723fc, (DWORD)ExitInGameStateHook, 5);
 	// CLifeSystem::Initialise Entering ingame state
 	Hooking::MakeJMP((BYTE*)0x004720bf, (DWORD)EnterInGameStateHook, 5);
-
+	// Disable autosave
+	Hooking::WriteToMemory(0x004a97d5, &jmpByte, 1);
 	RegisterEventListener(Core::_clientController);
 }
 
 void Core::RegisterEventListener(EventListener* listener) {
 	eventListeners.push_back(listener);
+}
+
+void Core::AllowMissionObjectCreation(bool allow) {
+	static char allowByte[] = { 0x74 };
+	static char disallowByte[] = { 0xEB };
+	if (allow) {
+		Hooking::WriteToMemory(0x0046ba46, allowByte, 1);
+	}
+	else
+	{
+		Hooking::WriteToMemory(0x0046ba46, disallowByte, 1);
+	}
 }

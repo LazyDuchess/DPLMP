@@ -71,7 +71,8 @@ void ClientController::Step() {
 	HandlePackets();
 	_timeController->Step();
 	// EXPERIMENTS
-	/* Crashes when going near a side mission area. Might work if the save has no side missions available?
+	// Crashes when going near a side mission area. Might work if the save has no side missions available?
+	/*
 	if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))
 	{
 		CLifeEventDataManager::GetInstance()->EndAllLifeEvents();

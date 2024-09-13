@@ -11,6 +11,7 @@ public:
 	static void Initialize();
 	static void RegisterEventListener(EventListener* listener);
 	static float FixedDeltaTime;
+	static void AllowMissionObjectCreation(bool allow);
 private:
 	static ClientController* _clientController;
 };
