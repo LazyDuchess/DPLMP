@@ -61,7 +61,7 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_DEBUG;DPLMPCLIENT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;../thirdparty/RakNet/Source;../thirdparty/qvm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;../thirdparty/RakNet/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -81,7 +81,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;../thirdparty/RakNet/Source;../thirdparty/qvm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;../thirdparty/RakNet/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
@@ -97,6 +97,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\DPLMPCommon\CommonDefines.h" />
+    <ClInclude Include="..\DPLMPCommon\PLMath.h" />
     <ClInclude Include="..\DPLMPCommon\PLMessageIdentifiers.h" />
     <ClInclude Include="..\DPLMPCommon\TimeCommon.h" />
     <ClInclude Include="..\thirdparty\RakNet\Source\AutopatcherPatchContext.h" />
@@ -272,6 +273,7 @@
     <ClInclude Include="dplmp\TimeController.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\DPLMPCommon\PLMath.cpp" />
     <ClCompile Include="..\thirdparty\RakNet\Source\Base64Encoder.cpp" />
     <ClCompile Include="..\thirdparty\RakNet\Source\BitStream.cpp" />
     <ClCompile Include="..\thirdparty\RakNet\Source\CCRakNetSlidingWindow.cpp" />

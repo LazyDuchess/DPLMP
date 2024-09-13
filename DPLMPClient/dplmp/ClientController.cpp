@@ -10,6 +10,7 @@
 #include "../dpl/SpoolableResourceManager.h"
 #include "../dpl/CLifeEventDataManager.h"
 #include "../dpl/CLifeInstances.h"
+#include "../../DPLMPCommon/PLMath.h"
 
 std::mutex connectionMutex;
 
@@ -87,18 +88,6 @@ void ClientController::OnEnterInGameState() {
     printf("Now In-Game!\n");
     SpoolableResourceManager::GetInstance()->SetEntityPriority(SpooledPackageType::Characters, 123, SpoolPriority::Request);
     CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->SwapSkin(123, 123);
-	mat<float, 4, 4>* playerMatrix = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetMatrix();
-	printf("Old Player Matrix:\n");
-	printf("[ %f %f %f %f ]\n", playerMatrix->a[0][0], playerMatrix->a[0][1], playerMatrix->a[0][2], playerMatrix->a[0][3]);
-	printf("[ %f %f %f %f ]\n", playerMatrix->a[1][0], playerMatrix->a[1][1], playerMatrix->a[1][2], playerMatrix->a[1][3]);
-	printf("[ %f %f %f %f ]\n", playerMatrix->a[2][0], playerMatrix->a[2][1], playerMatrix->a[2][2], playerMatrix->a[2][3]);
-	printf("[ %f %f %f %f ]\n", playerMatrix->a[3][0], playerMatrix->a[3][1], playerMatrix->a[3][2], playerMatrix->a[3][3]);
-	SetEulerRotation(playerMatrix, { 0.0, 45.0, 0.0 });
-	printf("New Player Matrix:\n");
-	printf("[ %f %f %f %f ]\n", playerMatrix->a[0][0], playerMatrix->a[0][1], playerMatrix->a[0][2], playerMatrix->a[0][3]);
-	printf("[ %f %f %f %f ]\n", playerMatrix->a[1][0], playerMatrix->a[1][1], playerMatrix->a[1][2], playerMatrix->a[1][3]);
-	printf("[ %f %f %f %f ]\n", playerMatrix->a[2][0], playerMatrix->a[2][1], playerMatrix->a[2][2], playerMatrix->a[2][3]);
-	printf("[ %f %f %f %f ]\n", playerMatrix->a[3][0], playerMatrix->a[3][1], playerMatrix->a[3][2], playerMatrix->a[3][3]);
     Connect();
 }
 
