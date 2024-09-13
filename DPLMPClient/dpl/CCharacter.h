@@ -1,10 +1,10 @@
 #pragma once
-#include <d3dx9math.h>
+#include "../../DPLMPCommon/PLMath.h"
 
 class CCharacter {
 public:
 	void SetModel(int model);
 	void SetAnimType(int type);
 	void SwapSkin(int animations, int skin);
-	D3DXMATRIX* GetMatrix();
+	mat<float, 4, 4>* GetMatrix();
 };
