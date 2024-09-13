@@ -7,6 +7,6 @@ void CVehicle::SetColor(float R, float G, float B)
 	*(float*)(this + 148) = B;
 }
 
-PHBaseObj* CVehicle::GetPhysicsObject() {
-	return *(PHBaseObj**)((int)this + 0xef80);
+CHandling* CVehicle::GetHandling() {
+	return *(CHandling**)((int)this + 0x2C);
 }

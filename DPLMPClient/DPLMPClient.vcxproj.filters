@@ -192,6 +192,7 @@
     <ClInclude Include="..\DPLMPCommon\PLMath.h" />
     <ClInclude Include="dpl\CVehicle.h" />
     <ClInclude Include="dpl\PHBaseObj.h" />
+    <ClInclude Include="dpl\CHandling.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dplmp\Core.cpp">
@@ -326,6 +327,7 @@
     <ClCompile Include="..\DPLMPCommon\PLMath.cpp" />
     <ClCompile Include="dpl\CVehicle.cpp" />
     <ClCompile Include="dpl\PHBaseObj.cpp" />
+    <ClCompile Include="dpl\CHandling.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\thirdparty\RakNet\Source\RakNet.vcproj" />

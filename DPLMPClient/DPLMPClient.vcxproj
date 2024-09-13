@@ -256,6 +256,7 @@
     <ClInclude Include="..\thirdparty\RakNet\Source\_FindFirst.h" />
     <ClInclude Include="dplmp\ClientController.h" />
     <ClInclude Include="dplmp\Core.h" />
+    <ClInclude Include="dpl\CHandling.h" />
     <ClInclude Include="dpl\CVehicle.h" />
     <ClInclude Include="dplmp\Hooking.h" />
     <ClInclude Include="dplmp\EventListener.h" />
@@ -401,6 +402,7 @@
     </ClCompile>
     <ClCompile Include="dpl\CCharacter.cpp" />
     <ClCompile Include="dpl\CCharacterManager.cpp" />
+    <ClCompile Include="dpl\CHandling.cpp" />
     <ClCompile Include="dpl\CLifeEnvironment.cpp" />
     <ClCompile Include="dplmp\TimeController.cpp" />
     <ClCompile Include="dpl\CLifeEventDataManager.cpp" />

@@ -87,7 +87,7 @@ void ClientController::Step() {
     }*/
     if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))
     {
-        PHBaseObj* carPhysics = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle()->GetPhysicsObject();
+		PHBaseObj* carPhysics = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle()->GetHandling()->GetPhysicsObject();
         printf("Our physics object addr is %p\n", carPhysics);
 		printf("Our position is %f %f %f\n", carPhysics->GetPosition().a[0], carPhysics->GetPosition().a[1], carPhysics->GetPosition().a[2]);
         //PrintMatrix(CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle()->GetMatrix());
