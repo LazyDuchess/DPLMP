@@ -87,11 +87,25 @@ void ClientController::Step() {
     }*/
     if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))
     {
-		PHBaseObj* carPhysics = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle()->GetHandling()->GetPhysicsObject();
-        printf("Our physics object addr is %p\n", carPhysics);
-		printf("Our position is %f %f %f\n", carPhysics->GetPosition().a[0], carPhysics->GetPosition().a[1], carPhysics->GetPosition().a[2]);
+		CHandling* carHandling = nullptr;
+		CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle()->GetHandling(&carHandling);
+		PHBaseObj* carPhysics = carHandling->GetPhysicsObject();
+        //printf("Our physics object addr is %p\n", carPhysics);
+		auto pos = carPhysics->GetPosition();
+		auto rot = carPhysics->GetRotation();
+		printf("Our position is %f %f %f\n", pos.a[0], pos.a[1], pos.a[2]);
+		printf("Our rotation is %f %f %f %f\n", rot.a[0], rot.a[1], rot.a[2], rot.a[3]);
         //PrintMatrix(CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle()->GetMatrix());
     }
+
+	if (((GetAsyncKeyState(VK_NUMPAD2) & 0x8001) == 0x8001))
+	{
+		CHandling* carHandling = nullptr;
+		CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle()->GetHandling(&carHandling);
+		PHBaseObj* carPhysics = carHandling->GetPhysicsObject();
+		carPhysics->SetPosition({ -2154.103760, 0.962602, 3770.465332 });
+		carPhysics->SetRotation({ -0.001713, 0.980018, 0.001385, -0.198899 });
+	}
 }
 
 void ClientController::OnPlayerCreated() {

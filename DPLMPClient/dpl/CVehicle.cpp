@@ -1,12 +1,13 @@
 #include "CVehicle.h"
 
-void CVehicle::SetColor(float R, float G, float B)
+void CVehicle::SetColor(vec<float,3> rgb)
 {
-	*(float*)(this + 140) = R;
-	*(float*)(this + 144) = G;
-	*(float*)(this + 148) = B;
+	*(float*)(this + 140) = rgb.a[0];
+	*(float*)(this + 144) = rgb.a[1];
+	*(float*)(this + 148) = rgb.a[2];
 }
 
-CHandling* CVehicle::GetHandling() {
-	return *(CHandling**)((int)this + 0x2C);
+void CVehicle::GetHandling(CHandling** handling) {
+	int vTableAddr = *(int*)this;
+	((void(__thiscall*)(CVehicle*, CHandling**)) * (int*)(vTableAddr + 0x64))(this, handling);
 }

@@ -4,6 +4,6 @@
 
 class CVehicle {
 public:
-	void SetColor(float R, float G, float B);
-	CHandling* GetHandling();
+	void SetColor(vec<float,3> rgb);
+	void GetHandling(CHandling** handling);
 };

@@ -7,7 +7,7 @@
 
 class NetworkedCar {
 public:
-	NetworkedCar(tVehicleModelUID model, vec<float, 3> position, quat<float> rotation, UIDProvider* uidProvider, float r, float g, float b);
+	NetworkedCar(tVehicleModelUID model, vec<float, 3> position, quat<float> rotation, UIDProvider* uidProvider, vec<float,3> color);
 	void WriteFullState(RakNet::BitStream* stream);
 	void WriteUpdate(RakNet::BitStream* stream);
 	void ReadUpdate(RakNet::BitStream* stream);
@@ -16,7 +16,7 @@ public:
 	unsigned int UID;
 	vec<float, 3> Position;
 	quat<float> Rotation;
-	float Color[3];
+	vec<float, 3> Color;
 private:
 	UIDProvider* _uidProvider;
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include "../../DPLMPCommon/PLMath.h"
+// Angular velocity is still a mystery to me
 class PHBaseObj {
 public:
 	vec<float, 3> GetPosition();
