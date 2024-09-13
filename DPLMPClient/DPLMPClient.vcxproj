@@ -256,6 +256,7 @@
     <ClInclude Include="..\thirdparty\RakNet\Source\_FindFirst.h" />
     <ClInclude Include="dplmp\ClientController.h" />
     <ClInclude Include="dplmp\Core.h" />
+    <ClInclude Include="dpl\CVehicle.h" />
     <ClInclude Include="dplmp\Hooking.h" />
     <ClInclude Include="dplmp\EventListener.h" />
     <ClInclude Include="dpl\CCharacter.h" />
@@ -266,6 +267,7 @@
     <ClInclude Include="dpl\CLifePlayer.h" />
     <ClInclude Include="dpl\CLifeSystem.h" />
     <ClInclude Include="dpl\CPlayerDriverBehaviour.h" />
+    <ClInclude Include="dpl\PHBaseObj.h" />
     <ClInclude Include="dpl\SpoolableResourceManager.h" />
     <ClInclude Include="dpl\SpooledPackageType.h" />
     <ClInclude Include="dpl\SpoolPriority.h" />
@@ -405,6 +407,8 @@
     <ClCompile Include="dpl\CLifeInstances.cpp" />
     <ClCompile Include="dpl\CLifeSystem.cpp" />
     <ClCompile Include="dpl\CPlayerDriverBehaviour.cpp" />
+    <ClCompile Include="dpl\CVehicle.cpp" />
+    <ClCompile Include="dpl\PHBaseObj.cpp" />
     <ClCompile Include="dpl\SpoolableResourceManager.cpp" />
   </ItemGroup>
   <ItemGroup>

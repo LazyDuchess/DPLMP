@@ -1,5 +1,6 @@
 #pragma once
 #include "../../DPLMPCommon/PLMath.h"
+#include "CVehicle.h"
 
 class CCharacter {
 public:
@@ -7,4 +8,5 @@ public:
 	void SetAnimType(int type);
 	void SwapSkin(int animations, int skin);
 	mat<float, 4, 4>* GetMatrix();
+	CVehicle* GetVehicle();
 };

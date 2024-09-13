@@ -15,6 +15,10 @@ file(GLOB RAKNET_SOURCES "../thirdparty/RakNet/Source/*.cpp")
 
 target_sources(DPLMPServer PRIVATE ${RAKNET_SOURCES})
 
+file(GLOB COMMON_SOURCES "../DPLMPCommon/*.cpp")
+
+target_sources(DPLMPServer PRIVATE ${COMMON_SOURCES})
+
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET DPLMPServer PROPERTY CXX_STANDARD 14)
 endif()

@@ -68,16 +68,30 @@ void ClientController::HandlePackets() {
 	}
 }
 
+void PrintMatrix(mat<float, 4, 4>* matrix) {
+	printf("[ %f %f %f %f ]\n", matrix->a[0][0], matrix->a[0][1], matrix->a[0][2], matrix->a[0][3]);
+	printf("[ %f %f %f %f ]\n", matrix->a[1][0], matrix->a[1][1], matrix->a[1][2], matrix->a[1][3]);
+	printf("[ %f %f %f %f ]\n", matrix->a[2][0], matrix->a[2][1], matrix->a[2][2], matrix->a[2][3]);
+	printf("[ %f %f %f %f ]\n", matrix->a[3][0], matrix->a[3][1], matrix->a[3][2], matrix->a[3][3]);
+}
+
 void ClientController::Step() {
-	HandlePackets();
-	_timeController->Step();
-	// EXPERIMENTS
-	// Crashes when going near a side mission area. Might work if the save has no side missions available?
-	/*
-	if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))
-	{
-		CLifeEventDataManager::GetInstance()->EndAllLifeEvents();
-	}*/
+    HandlePackets();
+    _timeController->Step();
+    // EXPERIMENTS
+    // Crashes when going near a side mission area. Might work if the save has no side missions available?
+    /*
+    if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))
+    {
+        CLifeEventDataManager::GetInstance()->EndAllLifeEvents();
+    }*/
+    if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))
+    {
+        PHBaseObj* carPhysics = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle()->GetPhysicsObject();
+        printf("Our physics object addr is %p\n", carPhysics);
+		printf("Our position is %f %f %f\n", carPhysics->GetPosition().a[0], carPhysics->GetPosition().a[1], carPhysics->GetPosition().a[2]);
+        //PrintMatrix(CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle()->GetMatrix());
+    }
 }
 
 void ClientController::OnPlayerCreated() {

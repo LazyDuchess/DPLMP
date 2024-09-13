@@ -1,4 +1,5 @@
 #include "CCharacter.h"
+#include "CVehicle.h"
 
 void CCharacter::SetModel(int model)
 {
@@ -19,4 +20,9 @@ void CCharacter::SwapSkin(int animations, int skin)
 mat<float, 4, 4>* CCharacter::GetMatrix()
 {
 	return (mat<float, 4, 4>*)((int)this + 16);
+}
+
+CVehicle* CCharacter::GetVehicle()
+{
+	return *(CVehicle**)((int)this + 0x688);
 }
