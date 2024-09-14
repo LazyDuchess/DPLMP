@@ -18,7 +18,7 @@ NetworkedCar::NetworkedCar() {
 	Color = { 1,1,1 };
 	Velocity = { 0,0,0 };
 	_requestedSpawn = false;
-	_timeSpawned = steady_clock::now();
+	_stepsSinceSpawn = 0;
 }
 
 void NetworkedCar::ReadFullState(RakNet::BitStream* stream) {
@@ -69,7 +69,7 @@ void NetworkedCar::OwnedStep() {
 }
 
 void NetworkedCar::DoSpawnCar() {
-	_timeSpawned = steady_clock::now();
+	_stepsSinceSpawn = 0;
 	CVehicleManager* vehicleManager = CVehicleManager::GetInstance();
 	_requestedSpawn = false;
 	CVehicle* veh;
@@ -93,6 +93,7 @@ void NetworkedCar::Step() {
 		}
 	}
 	if (Vehicle == nullptr) return;
+	_stepsSinceSpawn++;
 	ClientController* client = Core::GetClientController();
 	CVehicle* myVehicle = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle();
 	
@@ -133,8 +134,7 @@ NetworkedCar::~NetworkedCar() {
 }
 
 bool NetworkedCar::ShouldBeNetworkedByLocalPlayer() {
-	std::chrono::duration<float> elapsedSpawnTime = steady_clock::now() - _timeSpawned;
-	if (elapsedSpawnTime.count() <= SpawnNetworkCooldown) return false;
+	if (_stepsSinceSpawn <= SpawnNetworkStepCooldown) return false;
 	if (Vehicle == nullptr) return false;
 	if (Core::GetClientController()->MyGUID == Owner)
 		return true;

@@ -31,10 +31,10 @@ public:
 	quat<float> Rotation;
 	vec<float, 3> Color;
 private:
-	steady_clock::time_point _timeSpawned;
+	int _stepsSinceSpawn;
 	bool _requestedSpawn;
 	void OwnedStep();
 	void DoSpawnCar();
 	const float NetworkDistance = 300.0;
-	const float SpawnNetworkCooldown = 0.25;
+	const int SpawnNetworkStepCooldown = 2;
 };
