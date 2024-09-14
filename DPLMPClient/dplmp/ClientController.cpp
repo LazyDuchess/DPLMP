@@ -136,6 +136,9 @@ void ClientController::OnEnterInGameState() {
     printf("Now In-Game!\n");
     SpoolableResourceManager::GetInstance()->SetEntityPriority(SpooledPackageType::Characters, 123, SpoolPriority::Request);
     CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->SwapSkin(123, 123);
+	mat<float,4,4>* playerMatrix = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetMatrix();
+	// spawn at jersey
+	SetPosition(playerMatrix, { -2189.333496, 0.067905, 3787.999512 });
     Connect();
 }
 

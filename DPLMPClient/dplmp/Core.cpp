@@ -20,6 +20,13 @@ float Core::FixedDeltaTime = 0.0;
 steady_clock::time_point beginTimePoint;
 steady_clock::time_point beginLoadingTime;
 const float minimumLoadingTime = 0.1;
+const char* thenLevelsOverride = "DPLMP\\level_then.txt";
+const char* nowLevelsOverride = "DPLMP\\level_now.txt";
+
+// TODO: come up with something better, hardcoded preferably.
+void OverrideLevels(const char* str) {
+	Hooking::WriteToMemory(0x00467e27, &str, 4);
+}
 
 void __declspec(naked) ReturnEarly() {
 	__asm {
@@ -106,6 +113,7 @@ void __stdcall OnExitInGameStateHook() {
 
 void __stdcall OnEnterInGameStateHook() {
 	Core::InGame = true;
+	CLifeEventDataManager::GetInstance()->EndAllLifeEvents();
 	for (auto listener : eventListeners) {
 		listener->OnEnterInGameState();
 	}
@@ -296,6 +304,9 @@ void Core::Initialize() {
 
 	// Hit us up on CLoadingScreen::Activate
 	Hooking::MakeJMP((BYTE*)0x004a76ef, (DWORD)LoadingScreenActivateHook, 9);
+
+	// Spawn us immediately
+	OverrideLevels(thenLevelsOverride);
 
 	RegisterEventListener(_clientController);
 }
