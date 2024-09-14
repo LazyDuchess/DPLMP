@@ -8,5 +8,6 @@ public:
 	void RequestEntity(SpooledPackageType packageType, int ID, SpoolPriority priority, int unk2);
 	bool IsEntityLoaded(SpooledPackageType packageType, int ID);
 	bool IsEntityPresent(SpooledPackageType packageType, int ID);
+	int GetStatus();
 	static SpoolableResourceManager* GetInstance();
 };

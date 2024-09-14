@@ -197,6 +197,7 @@
     <ClInclude Include="dplmp\NetworkedCar.h" />
     <ClInclude Include="dpl\CVehicleManager.h" />
     <ClInclude Include="dpl\LifeAcquirableVehicleManager.h" />
+    <ClInclude Include="dpl\CLoadingScreen.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dplmp\Core.cpp">
@@ -336,6 +337,7 @@
     <ClCompile Include="dplmp\NetworkedCar.cpp" />
     <ClCompile Include="dpl\CVehicleManager.cpp" />
     <ClCompile Include="dpl\LifeAcquirableVehicleManager.cpp" />
+    <ClCompile Include="dpl\CLoadingScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\thirdparty\RakNet\Source\RakNet.vcproj" />

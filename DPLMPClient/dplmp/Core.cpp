@@ -7,6 +7,8 @@
 #include <chrono>
 #include "../../DPLMPCommon/CommonDefines.h"
 #include "../dpl/CLifeEventDataManager.h"
+#include "../dpl/CLoadingScreen.h"
+#include "../dpl/SpoolableResourceManager.h"
 
 
 std::vector<EventListener*> eventListeners;
@@ -72,6 +74,18 @@ void __stdcall OnGameStepHook() {
 			listener->Step();
 		}
 		beginTimePoint = steady_clock::now();
+	}
+
+	// HACK? Loading screen will wait for life events that are not stepping, so instead we just disable it when resources are loaded.
+	if (Core::InGame) {
+		SpoolableResourceManager* resManager = SpoolableResourceManager::GetInstance();
+		CLoadingScreen* loadingScreen = CLoadingScreen::GetInstance();
+		printf("Spool status: %d\n", resManager->GetStatus());
+		if (loadingScreen != nullptr && resManager != nullptr) {
+			int spoolStatus = resManager->GetStatus();
+			if (spoolStatus != 0)
+				loadingScreen->Deactivate();
+		}
 	}
 }
 
@@ -218,8 +232,8 @@ void Core::Initialize() {
 	Hooking::MakeJMP((BYTE*)0x0040FC04, (DWORD)CreateCopVehicleHook, 5);
 	// jump over scripted ped creation
 	Hooking::MakeJMP((BYTE*)0x004488D0, (DWORD)CreatePedsHook, 5);
-	// jump over constantly trying to create uninitialised vehicles. NVM this patch caused lag for some reason.
-	//Hooking::MakeJMP((BYTE*)0x00431EB3, 0x00432001, 6);
+	// jump over constantly trying to create uninitialised vehicles. NVM this patch caused lag for some reason. Still testing.
+	// Hooking::MakeJMP((BYTE*)0x00431EB3, 0x00432001, 6);
 	// same as above, but without the lag!
 	Hooking::Nop((BYTE*)0x0042d007, 2);
 	Hooking::MakeJMP((BYTE*)0x0042D010, 0x0042EA8D, 6);
@@ -229,6 +243,7 @@ void Core::Initialize() {
 	//
 	// Force 1.0 time multiplier always
 	Hooking::MakeJMP((BYTE*)0x0045ace8, (DWORD)SetGameSpeedMultiplierHook, 6);
+
 	// Events
 	//
 	// CoreCreate Character - CreatePlayer case.
@@ -239,9 +254,15 @@ void Core::Initialize() {
 	Hooking::MakeJMP((BYTE*)0x004723fc, (DWORD)ExitInGameStateHook, 5);
 	// CLifeSystem::Initialise Entering ingame state
 	Hooking::MakeJMP((BYTE*)0x004720bf, (DWORD)EnterInGameStateHook, 5);
+
 	// Disable autosave
 	Hooking::WriteToMemory(0x004a97d5, &jmpByte, 1);
-	RegisterEventListener(Core::_clientController);
+
+	// Disable CLifeEventDataManager::Step(), which stops life events from progressing.
+	// Good enough for now, but ideally we'd prevent life events from being created/end them all and delete mission markers while also not crashing.
+	Hooking::Nop((BYTE*)0x004721b3, 5);
+
+	RegisterEventListener(_clientController);
 }
 
 void Core::RegisterEventListener(EventListener* listener) {

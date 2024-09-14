@@ -22,6 +22,10 @@ bool SpoolableResourceManager::IsEntityPresent(SpooledPackageType packageType, i
 	return ((bool(__thiscall*)(SpoolableResourceManager*, int, int))0x547F5E)(this, packageType, ID);
 }
 
+int SpoolableResourceManager::GetStatus() {
+	return ((int(__thiscall*)(SpoolableResourceManager*))0x00547a3d)(this);
+}
+
 SpoolableResourceManager* SpoolableResourceManager::GetInstance()
 {
 	return *(SpoolableResourceManager**)(0x70C64C);

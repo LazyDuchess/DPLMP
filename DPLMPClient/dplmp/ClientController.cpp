@@ -12,8 +12,6 @@
 #include "../dpl/CLifeInstances.h"
 #include "../../DPLMPCommon/PLMath.h"
 
-std::mutex connectionMutex;
-
 ClientController::ClientController() {
 	_timeController = new TimeController();
 	_carController = new CarController();

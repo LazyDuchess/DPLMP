@@ -259,6 +259,7 @@
     <ClInclude Include="dplmp\Core.h" />
     <ClInclude Include="dplmp\NetworkedCar.h" />
     <ClInclude Include="dpl\CHandling.h" />
+    <ClInclude Include="dpl\CLoadingScreen.h" />
     <ClInclude Include="dpl\CVehicle.h" />
     <ClInclude Include="dplmp\Hooking.h" />
     <ClInclude Include="dplmp\EventListener.h" />
@@ -414,6 +415,7 @@
     <ClCompile Include="dpl\CLifeEventDataManager.cpp" />
     <ClCompile Include="dpl\CLifeInstances.cpp" />
     <ClCompile Include="dpl\CLifeSystem.cpp" />
+    <ClCompile Include="dpl\CLoadingScreen.cpp" />
     <ClCompile Include="dpl\CPlayerDriverBehaviour.cpp" />
     <ClCompile Include="dpl\CVehicle.cpp" />
     <ClCompile Include="dpl\CVehicleManager.cpp" />
