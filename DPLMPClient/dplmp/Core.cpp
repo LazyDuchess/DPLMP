@@ -18,6 +18,8 @@ bool Core::InGame = false;
 typedef std::chrono::steady_clock steady_clock;
 float Core::FixedDeltaTime = 0.0;
 steady_clock::time_point beginTimePoint;
+steady_clock::time_point beginLoadingTime;
+const float minimumLoadingTime = 0.1;
 
 void __declspec(naked) ReturnEarly() {
 	__asm {
@@ -64,7 +66,8 @@ void __declspec(naked) SetGameSpeedMultiplierHook() {
 }
 
 void __stdcall OnGameStepHook() {
-	std::chrono::duration<float> delta = steady_clock::now() - beginTimePoint;
+	steady_clock::time_point now = steady_clock::now();
+	std::chrono::duration<float> delta = now - beginTimePoint;
 	Core::FixedDeltaTime = delta.count();
 	for (auto listener : eventListeners) {
 		listener->FrameStep();
@@ -77,10 +80,9 @@ void __stdcall OnGameStepHook() {
 	}
 
 	// HACK? Loading screen will wait for life events that are not stepping, so instead we just disable it when resources are loaded.
-	if (Core::InGame) {
+	if (Core::InGame && std::chrono::duration<float>(now - beginLoadingTime).count() > minimumLoadingTime) {
 		SpoolableResourceManager* resManager = SpoolableResourceManager::GetInstance();
 		CLoadingScreen* loadingScreen = CLoadingScreen::GetInstance();
-		printf("Spool status: %d\n", resManager->GetStatus());
 		if (loadingScreen != nullptr && resManager != nullptr) {
 			int spoolStatus = resManager->GetStatus();
 			if (spoolStatus != 0)
@@ -106,6 +108,36 @@ void __stdcall OnEnterInGameStateHook() {
 	Core::InGame = true;
 	for (auto listener : eventListeners) {
 		listener->OnEnterInGameState();
+	}
+}
+
+void __stdcall OnLoadingScreenActivateHook() {
+	beginLoadingTime = steady_clock::now();
+}
+
+void __declspec(naked) LoadingScreenActivateHook() {
+	__asm {
+		push edi
+		push eax
+		push edx
+		push ecx
+		push ebp
+		push ebx
+		push esi
+		call OnLoadingScreenActivateHook
+		pop esi
+		pop ebx
+		pop ebp
+		pop ecx
+		pop edx
+		pop eax
+		pop edi
+		//Original
+		push esi
+		mov esi, ecx
+		lea eax, [esi + 0x3d9]
+		mov edi, 0x004a76f8
+		jmp edi
 	}
 }
 
@@ -261,6 +293,9 @@ void Core::Initialize() {
 	// Disable CLifeEventDataManager::Step(), which stops life events from progressing.
 	// Good enough for now, but ideally we'd prevent life events from being created/end them all and delete mission markers while also not crashing.
 	Hooking::Nop((BYTE*)0x004721b3, 5);
+
+	// Hit us up on CLoadingScreen::Activate
+	Hooking::MakeJMP((BYTE*)0x004a76ef, (DWORD)LoadingScreenActivateHook, 9);
 
 	RegisterEventListener(_clientController);
 }
