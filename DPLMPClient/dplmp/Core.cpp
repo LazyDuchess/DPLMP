@@ -20,6 +20,7 @@ float Core::FixedDeltaTime = 0.0;
 steady_clock::time_point beginTimePoint;
 steady_clock::time_point beginLoadingTime;
 const float minimumLoadingTime = 0.1;
+
 const char* thenLevelsOverride = "DPLMP\\level_then.txt";
 const char* nowLevelsOverride = "DPLMP\\level_now.txt";
 

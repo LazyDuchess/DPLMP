@@ -5,10 +5,12 @@
 class CarController {
 public:
 	CarController();
+	static CarController* GetInstance();
 	void Step();
 	void FrameStep();
 	void HandlePacket(RakNet::Packet* packet);
 	void OnDisconnect();
 private:
+	static CarController* _instance;
 	std::map<unsigned int, NetworkedCar*> _cars;
 };

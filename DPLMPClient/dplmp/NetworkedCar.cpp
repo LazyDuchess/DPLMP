@@ -6,6 +6,7 @@
 #include "../../DPLMPCommon/PLMessageIdentifiers.h"
 #include "../dpl/LifeAcquirableVehicleManager.h"
 
+
 NetworkedCar::NetworkedCar() {
 	Vehicle = nullptr;
 	VehicleModel = tVehicleModelUID_Andec;
@@ -17,6 +18,7 @@ NetworkedCar::NetworkedCar() {
 	Color = { 1,1,1 };
 	Velocity = { 0,0,0 };
 	_requestedSpawn = false;
+	_timeSpawned = steady_clock::now();
 }
 
 void NetworkedCar::ReadFullState(RakNet::BitStream* stream) {
@@ -42,7 +44,7 @@ void NetworkedCar::ReadUpdate(RakNet::BitStream* stream) {
 void NetworkedCar::FrameStep() {
 	if (Vehicle == nullptr) return;
 	ClientController* client = Core::GetClientController();
-	if (Owner == client->MyGUID) return;
+	if (ShouldBeNetworkedByLocalPlayer()) return;
 	CHandling* carHandling = nullptr;
 	Vehicle->GetHandling(&carHandling);
 	PHBaseObj* phys = carHandling->GetPhysicsObject();
@@ -67,6 +69,7 @@ void NetworkedCar::OwnedStep() {
 }
 
 void NetworkedCar::DoSpawnCar() {
+	_timeSpawned = steady_clock::now();
 	CVehicleManager* vehicleManager = CVehicleManager::GetInstance();
 	_requestedSpawn = false;
 	CVehicle* veh;
@@ -98,7 +101,7 @@ void NetworkedCar::Step() {
 	else if (myVehicle != Vehicle && OwnershipKind == OwnershipKinds::Driving && Owner == client->MyGUID)
 		ReleaseOwnership();
 
-	if (Owner == client->MyGUID)
+	if (ShouldBeNetworkedByLocalPlayer())
 		OwnedStep();
 }
 
@@ -127,4 +130,24 @@ void NetworkedCar::ReleaseOwnership() {
 NetworkedCar::~NetworkedCar() {
 	if (Vehicle != nullptr)
 		delete Vehicle;
+}
+
+bool NetworkedCar::ShouldBeNetworkedByLocalPlayer() {
+	std::chrono::duration<float> elapsedSpawnTime = steady_clock::now() - _timeSpawned;
+	if (elapsedSpawnTime.count() <= SpawnNetworkCooldown) return false;
+	if (Vehicle == nullptr) return false;
+	if (Core::GetClientController()->MyGUID == Owner)
+		return true;
+	else
+		return false;
+	CCharacter* player = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter();
+	if (player->GetVehicle() == Vehicle) return true;
+	vec<float,3> playerPosition = GetPosition(player->GetMatrix());
+
+	float dx = Position.a[0] - playerPosition.a[0];
+	float dy = Position.a[1] - playerPosition.a[1];
+	float dz = Position.a[2] - playerPosition.a[2];
+
+	float dist = sqrt(dx * dx + dy * dy + dz * dz);
+	return dist <= NetworkDistance;
 }

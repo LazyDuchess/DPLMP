@@ -4,6 +4,9 @@
 #include "RakPeerInterface.h"
 #include "BitStream.h"
 #include "../../DPLMPCommon/OwnershipKinds.h"
+#include <chrono>
+
+typedef std::chrono::steady_clock steady_clock;
 
 class NetworkedCar {
 public:
@@ -17,6 +20,7 @@ public:
 	void RequestSpawnCar();
 	void RequestOwnership();
 	void ReleaseOwnership();
+	bool ShouldBeNetworkedByLocalPlayer();
 	CVehicle* Vehicle;
 	tVehicleModelUID VehicleModel;
 	OwnershipKinds OwnershipKind;
@@ -27,7 +31,10 @@ public:
 	quat<float> Rotation;
 	vec<float, 3> Color;
 private:
+	steady_clock::time_point _timeSpawned;
 	bool _requestedSpawn;
 	void OwnedStep();
 	void DoSpawnCar();
+	const float NetworkDistance = 300.0;
+	const float SpawnNetworkCooldown = 0.25;
 };

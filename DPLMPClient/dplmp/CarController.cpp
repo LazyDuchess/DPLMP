@@ -1,8 +1,15 @@
 #include "CarController.h"
 #include "../../DPLMPCommon/PLMessageIdentifiers.h"
 
+CarController* CarController::_instance = nullptr;
+
 CarController::CarController() {
 	_cars = std::map<unsigned int, NetworkedCar*>();
+    _instance = this;
+}
+
+CarController* CarController::GetInstance() {
+    return _instance;
 }
 
 void CarController::Step() {
