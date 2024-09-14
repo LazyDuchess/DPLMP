@@ -20,18 +20,14 @@ NetworkedCar::NetworkedCar() {
 }
 
 void NetworkedCar::ReadFullState(RakNet::BitStream* stream) {
-	stream->Read(UID);
 	stream->Read(VehicleModel);
-	stream->Read(Position);
-	stream->Read(Velocity);
-	stream->Read(Rotation);
+	ReadUpdate(stream);
 	stream->Read(Owner);
 	stream->Read(OwnershipKind);
 	stream->Read(Color);
 }
 
 void NetworkedCar::WriteUpdate(RakNet::BitStream* stream) {
-	stream->Write(UID);
 	stream->Write(Position);
 	stream->Write(Velocity);
 	stream->Write(Rotation);
@@ -65,6 +61,7 @@ void NetworkedCar::OwnedStep() {
 	Velocity = phys->GetVelocity();
 	RakNet::BitStream bs;
 	bs.Write((unsigned char)ID_CARCONTROLLER_UPDATE);
+	bs.Write(UID);
 	WriteUpdate(&bs);
 	Core::GetClientController()->Send(&bs, PacketPriority::MEDIUM_PRIORITY, PacketReliability::UNRELIABLE, 0);
 }
@@ -125,4 +122,9 @@ void NetworkedCar::ReleaseOwnership() {
 	bs.Write((unsigned char)ID_CARCONTROLLER_RELEASEOWNERSHIP);
 	bs.Write(UID);
 	Core::GetClientController()->Send(&bs, PacketPriority::MEDIUM_PRIORITY, PacketReliability::UNRELIABLE, 0);
+}
+
+NetworkedCar::~NetworkedCar() {
+	if (Vehicle != nullptr)
+		delete Vehicle;
 }

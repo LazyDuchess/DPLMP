@@ -49,6 +49,7 @@ void ClientController::Connect() {
 }
 
 void ClientController::Disconnect() {
+	_carController->OnDisconnect();
 	if (Client == nullptr)
 		return;
 	Client->CloseConnection(ServerAddress, true);

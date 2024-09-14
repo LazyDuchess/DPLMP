@@ -29,6 +29,7 @@ void CarController::HandlePacket(RakNet::Packet* packet) {
         bs.Read(carCount);
         for (int i = 0; i < carCount; i++) {
             NetworkedCar* car = new NetworkedCar();
+            bs.Read(car->UID);
             car->ReadFullState(&bs);
             car->RequestSpawnCar();
             _cars[car->UID] = car;
@@ -59,4 +60,8 @@ void CarController::HandlePacket(RakNet::Packet* packet) {
         break;
     }
     }
+}
+
+void CarController::OnDisconnect() {
+    _cars.clear();
 }

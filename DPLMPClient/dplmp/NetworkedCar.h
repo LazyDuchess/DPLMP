@@ -8,6 +8,7 @@
 class NetworkedCar {
 public:
 	NetworkedCar();
+	~NetworkedCar();
 	void ReadFullState(RakNet::BitStream* stream);
 	void ReadUpdate(RakNet::BitStream* stream);
 	void WriteUpdate(RakNet::BitStream* stream);

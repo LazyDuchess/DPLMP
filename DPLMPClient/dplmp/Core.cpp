@@ -218,8 +218,8 @@ void Core::Initialize() {
 	Hooking::MakeJMP((BYTE*)0x0040FC04, (DWORD)CreateCopVehicleHook, 5);
 	// jump over scripted ped creation
 	Hooking::MakeJMP((BYTE*)0x004488D0, (DWORD)CreatePedsHook, 5);
-	// jump over constantly trying to create uninitialised vehicles
-	Hooking::MakeJMP((BYTE*)0x00431EB3, 0x00432001, 6);
+	// jump over constantly trying to create uninitialised vehicles. NVM this patch caused lag for some reason.
+	//Hooking::MakeJMP((BYTE*)0x00431EB3, 0x00432001, 6);
 
 	// Game Time Hooks
 	//

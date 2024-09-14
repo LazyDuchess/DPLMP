@@ -29,6 +29,7 @@ void CarController::Step() {
     bs.Write((unsigned int)_cars.size());
     for (auto const& car : _cars)
     {
+        bs.Write(car.second->UID);
         car.second->WriteUpdate(&bs);
         UpdateCarOwnership(car.second);
     }
@@ -42,6 +43,7 @@ void CarController::HandleClientConnected(Client* client) {
     bs.Write((unsigned int)_cars.size());
     for (auto const& car : _cars)
     {
+        bs.Write(car.second->UID);
         car.second->WriteFullState(&bs);
     }
     ServerController::GetInstance().Send(&bs, client->GUID, PacketPriority::HIGH_PRIORITY, PacketReliability::RELIABLE_ORDERED, 0);
