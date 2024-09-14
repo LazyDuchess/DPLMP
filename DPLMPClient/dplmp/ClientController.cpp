@@ -16,8 +16,10 @@ std::mutex connectionMutex;
 
 ClientController::ClientController() {
 	_timeController = new TimeController();
+	_carController = new CarController();
 	Client = nullptr;
 	ServerAddress = RakNet::UNASSIGNED_SYSTEM_ADDRESS;
+	MyGUID = RakNet::UNASSIGNED_RAKNET_GUID;
 }
 
 void ClientController::Connect() {
@@ -42,6 +44,7 @@ void ClientController::Connect() {
 	{
 		RakSleep(100);
 	}
+	MyGUID = Client->GetMyGUID();
 	printf("Connection state: %i\n", GetConnectionState());
 }
 
@@ -58,12 +61,20 @@ RakNet::ConnectionState ClientController::GetConnectionState() {
 }
 
 void ClientController::HandlePackets() {
-	if (GetConnectionState() == RakNet::IS_CONNECTED) {
+	if (Client != nullptr) {
 		RakNet::Packet* packet;
 		for (packet = Client->Receive(); packet; Client->DeallocatePacket(packet), packet = Client->Receive())
 		{
-			if (packet->data[0] == ID_TIMEOFDAY)
+			switch (packet->data[0]) {
+			case ID_TIMEOFDAY:
 				_timeController->HandlePacket(packet);
+				break;
+			case ID_CARCONTROLLER_FULLSTATE:
+			case ID_CARCONTROLLER_OWNERSHIP:
+			case ID_CARCONTROLLER_UPDATE:
+				_carController->HandlePacket(packet);
+				break;
+			}
 		}
 	}
 }
@@ -75,8 +86,13 @@ void PrintMatrix(mat<float, 4, 4>* matrix) {
 	printf("[ %f %f %f %f ]\n", matrix->a[3][0], matrix->a[3][1], matrix->a[3][2], matrix->a[3][3]);
 }
 
+void ClientController::FrameStep() {
+	_carController->FrameStep();
+}
+
 void ClientController::Step() {
     HandlePackets();
+	_carController->Step();
     _timeController->Step();
     // EXPERIMENTS
     // Crashes when going near a side mission area. Might work if the save has no side missions available?
@@ -85,6 +101,7 @@ void ClientController::Step() {
     {
         CLifeEventDataManager::GetInstance()->EndAllLifeEvents();
     }*/
+	/*
     if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))
     {
 		CHandling* carHandling = nullptr;
@@ -105,7 +122,11 @@ void ClientController::Step() {
 		PHBaseObj* carPhysics = carHandling->GetPhysicsObject();
 		carPhysics->SetPosition({ -2154.103760, 0.962602, 3770.465332 });
 		carPhysics->SetRotation({ -0.001713, 0.980018, 0.001385, -0.198899 });
-	}
+	}*/
+}
+
+void ClientController::Send(const RakNet::BitStream* bitStream, PacketPriority priority, PacketReliability reliability, char orderingChannel) {
+	Client->Send(bitStream, priority, reliability, orderingChannel, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
 void ClientController::OnPlayerCreated() {

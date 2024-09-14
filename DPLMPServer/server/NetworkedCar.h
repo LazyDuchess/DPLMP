@@ -4,6 +4,7 @@
 #include "UIDProvider.h"
 #include "VehicleModel.h"
 #include "PLMath.h"
+#include "OwnershipKinds.h"
 
 class NetworkedCar {
 public:
@@ -13,8 +14,10 @@ public:
 	void ReadUpdate(RakNet::BitStream* stream);
 	tVehicleModelUID VehicleModel;
 	RakNet::RakNetGUID Owner;
+	OwnershipKinds OwnershipKind;
 	unsigned int UID;
 	vec<float, 3> Position;
+	vec<float, 3> Velocity;
 	quat<float> Rotation;
 	vec<float, 3> Color;
 private:

@@ -2,6 +2,6 @@
 enum SpooledPackageType
 {
 	Vehicles = 0,
-	Unknown,
+	UnknownPackage,
 	Characters
 };

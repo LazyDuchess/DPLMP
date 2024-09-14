@@ -254,8 +254,10 @@
     <ClInclude Include="..\thirdparty\RakNet\Source\WSAStartupSingleton.h" />
     <ClInclude Include="..\thirdparty\RakNet\Source\XBox360Includes.h" />
     <ClInclude Include="..\thirdparty\RakNet\Source\_FindFirst.h" />
+    <ClInclude Include="dplmp\CarController.h" />
     <ClInclude Include="dplmp\ClientController.h" />
     <ClInclude Include="dplmp\Core.h" />
+    <ClInclude Include="dplmp\NetworkedCar.h" />
     <ClInclude Include="dpl\CHandling.h" />
     <ClInclude Include="dpl\CVehicle.h" />
     <ClInclude Include="dplmp\Hooking.h" />
@@ -268,6 +270,8 @@
     <ClInclude Include="dpl\CLifePlayer.h" />
     <ClInclude Include="dpl\CLifeSystem.h" />
     <ClInclude Include="dpl\CPlayerDriverBehaviour.h" />
+    <ClInclude Include="dpl\CVehicleManager.h" />
+    <ClInclude Include="dpl\LifeAcquirableVehicleManager.h" />
     <ClInclude Include="dpl\PHBaseObj.h" />
     <ClInclude Include="dpl\SpoolableResourceManager.h" />
     <ClInclude Include="dpl\SpooledPackageType.h" />
@@ -388,6 +392,7 @@
     <ClCompile Include="..\thirdparty\RakNet\Source\WSAStartupSingleton.cpp" />
     <ClCompile Include="..\thirdparty\RakNet\Source\_FindFirst.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="dplmp\CarController.cpp" />
     <ClCompile Include="dplmp\ClientController.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../pch.h</PrecompiledHeaderFile>
@@ -400,6 +405,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="dplmp\NetworkedCar.cpp" />
     <ClCompile Include="dpl\CCharacter.cpp" />
     <ClCompile Include="dpl\CCharacterManager.cpp" />
     <ClCompile Include="dpl\CHandling.cpp" />
@@ -410,6 +416,8 @@
     <ClCompile Include="dpl\CLifeSystem.cpp" />
     <ClCompile Include="dpl\CPlayerDriverBehaviour.cpp" />
     <ClCompile Include="dpl\CVehicle.cpp" />
+    <ClCompile Include="dpl\CVehicleManager.cpp" />
+    <ClCompile Include="dpl\LifeAcquirableVehicleManager.cpp" />
     <ClCompile Include="dpl\PHBaseObj.cpp" />
     <ClCompile Include="dpl\SpoolableResourceManager.cpp" />
   </ItemGroup>

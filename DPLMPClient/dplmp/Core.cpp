@@ -64,6 +64,9 @@ void __declspec(naked) SetGameSpeedMultiplierHook() {
 void __stdcall OnGameStepHook() {
 	std::chrono::duration<float> delta = steady_clock::now() - beginTimePoint;
 	Core::FixedDeltaTime = delta.count();
+	for (auto listener : eventListeners) {
+		listener->FrameStep();
+	}
 	if (Core::FixedDeltaTime >= TICKRATE) {
 		for (auto listener : eventListeners) {
 			listener->Step();

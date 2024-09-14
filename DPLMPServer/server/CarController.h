@@ -18,4 +18,5 @@ private:
 	UIDProvider _carUIDProvider;
 	std::map<unsigned int, NetworkedCar*> _cars;
 	void SpawnTestCars();
+	void UpdateCarOwnership(NetworkedCar* car);
 };

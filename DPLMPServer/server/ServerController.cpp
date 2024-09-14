@@ -20,7 +20,7 @@ void ServerController::Connect() {
 	Server->SetTimeoutTime(5000, RakNet::UNASSIGNED_SYSTEM_ADDRESS);
 	RakNet::SocketDescriptor socketDescriptor(7126, 0);
 	socketDescriptor.socketFamily = socketFamily;
-	Server->SetMaximumIncomingConnections(4);
+	Server->SetMaximumIncomingConnections(100);
 	RakNet::StartupResult sr;
 	sr = Server->Startup(4, &socketDescriptor, 1);
 	if (sr != RakNet::RAKNET_STARTED)
@@ -60,6 +60,7 @@ void ServerController::HandlePackets() {
 			break;
 		case ID_CARCONTROLLER_MAKEMEOWNER:
 		case ID_CARCONTROLLER_RELEASEOWNERSHIP:
+		case ID_CARCONTROLLER_UPDATE:
 			_carController->HandlePacket(packet);
 			break;
 		}
@@ -69,12 +70,13 @@ void ServerController::HandlePackets() {
 void ServerController::Step() {
 	HandlePackets();
 	_timeController->Step();
+	_carController->Step();
 }
 
 void ServerController::Send(const RakNet::BitStream* bitStream, RakNet::RakNetGUID clientGuid, PacketPriority priority, PacketReliability reliability, char orderingChannel) {
-	Server->Send(bitStream, priority, reliability, reliability, clientGuid, false);
+	Server->Send(bitStream, priority, reliability, orderingChannel, clientGuid, false);
 }
 
 void ServerController::Broadcast(const RakNet::BitStream *bitStream, PacketPriority priority, PacketReliability reliability, char orderingChannel) {
-	Server->Send(bitStream, priority, reliability, reliability, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+	Server->Send(bitStream, priority, reliability, orderingChannel, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 }

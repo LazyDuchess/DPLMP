@@ -1,6 +1,7 @@
 #include "CarController.h"
 #include "PLMessageIdentifiers.h"
 #include "ServerController.h"
+#include "OwnershipKinds.h"
 
 void CarController::SpawnTestCars() {
     CreateVehicle(tVehicleModelUID::tVehicleModelUID_Andec_Punk, { -2192.623047, 0.983009, 3798.156982 }, { -0.004596, 0.953209, 0.003860, 0.302252 }, { 1,1,1 });
@@ -29,6 +30,7 @@ void CarController::Step() {
     for (auto const& car : _cars)
     {
         car.second->WriteUpdate(&bs);
+        UpdateCarOwnership(car.second);
     }
     ServerController::GetInstance().Broadcast(&bs, PacketPriority::MEDIUM_PRIORITY, PacketReliability::UNRELIABLE, 0);
 }
@@ -51,6 +53,7 @@ void CarController::HandleClientDisconnected(Client* client) {
     {
         if (car.second->Owner == client->GUID) {
             car.second->Owner = RakNet::UNASSIGNED_RAKNET_GUID;
+            car.second->OwnershipKind = OwnershipKinds::Normal;
             BroadcastOwnership(car.second);
         }
     }
@@ -61,21 +64,22 @@ void CarController::BroadcastOwnership(NetworkedCar* car) {
     bs.Write((unsigned char)ID_CARCONTROLLER_OWNERSHIP);
     bs.Write(car->UID);
     bs.Write(car->Owner);
-    ServerController::GetInstance().Broadcast(&bs, PacketPriority::HIGH_PRIORITY, PacketReliability::RELIABLE_ORDERED, 0);
+    bs.Write(car->OwnershipKind);
+    ServerController::GetInstance().Broadcast(&bs, PacketPriority::LOW_PRIORITY, PacketReliability::RELIABLE_ORDERED, 0);
 }
 
 void CarController::HandlePacket(RakNet::Packet* packet) {
     RakNet::BitStream bs(packet->data, packet->length, false);
     bs.IgnoreBytes(1);
     switch (packet->data[0]) {
+
         case ID_CARCONTROLLER_MAKEMEOWNER:
         {
             unsigned int uid;
-            RakNet::RakNetGUID owner;
             bs.Read(uid);
-            bs.Read(owner);
             if (_cars.find(uid) != _cars.end()) {
-                _cars[uid]->Owner = owner;
+                _cars[uid]->Owner = packet->guid;
+                _cars[uid]->OwnershipKind = OwnershipKinds::Driving;
                 BroadcastOwnership(_cars[uid]);
             }
         }
@@ -89,11 +93,40 @@ void CarController::HandlePacket(RakNet::Packet* packet) {
             if (_cars.find(uid) != _cars.end()) {
                 if (_cars[uid]->Owner == packet->guid) {
                     // TODO: Find situable owner on release and disconnect.
-                    _cars[uid]->Owner = RakNet::UNASSIGNED_RAKNET_GUID;
+                    _cars[uid]->OwnershipKind = OwnershipKinds::Normal;
                     BroadcastOwnership(_cars[uid]);
                 }
             }
         }
             break;
+
+        case ID_CARCONTROLLER_UPDATE:
+        {
+            unsigned int uid;
+            bs.Read(uid);
+            if (_cars.find(uid) != _cars.end()) {
+                if (_cars[uid]->Owner == packet->guid) {
+                    _cars[uid]->ReadUpdate(&bs);
+                }
+            }
+        }
+    }
+}
+
+void CarController::UpdateCarOwnership(NetworkedCar* car) {
+    ServerController server = ServerController::GetInstance();
+    if (server.Clients.size() == 0) {
+		car->Owner = RakNet::UNASSIGNED_RAKNET_GUID;
+		car->OwnershipKind = OwnershipKinds::Normal;
+	}
+    else
+    {
+        if (car->OwnershipKind == OwnershipKinds::Normal) {
+            if (car->Owner == RakNet::UNASSIGNED_RAKNET_GUID) {
+                car->Owner = server.Clients.begin()->first;
+                car->OwnershipKind = OwnershipKinds::Normal;
+                BroadcastOwnership(car);
+            }
+        }
     }
 }
