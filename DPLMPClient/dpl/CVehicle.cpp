@@ -11,3 +11,9 @@ void CVehicle::GetHandling(CHandling** handling) {
 	int vTableAddr = *(int*)this;
 	((void(__thiscall*)(CVehicle*, CHandling**)) * (int*)(vTableAddr + 0x64))(this, handling);
 }
+
+PHBaseObj* CVehicle::GetPhysicsObject() {
+	CHandling* carHandling = nullptr;
+	GetHandling(&carHandling);
+	return carHandling->GetPhysicsObject();
+}

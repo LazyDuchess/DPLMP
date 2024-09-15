@@ -122,6 +122,54 @@ void ClientController::Step() {
 		carPhysics->SetPosition({ -2154.103760, 0.962602, 3770.465332 });
 		carPhysics->SetRotation({ -0.001713, 0.980018, 0.001385, -0.198899 });
 	}*/
+
+	if (((GetAsyncKeyState(VK_NUMPAD2) & 0x8001) == 0x8001))
+	{
+		CVehicle* veh = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle();
+		PHBaseObj* carPhysics = veh->GetPhysicsObject();
+
+		vec<float, 3> physicsPosition = carPhysics->GetPosition();
+		quat<float> physicsRotation = carPhysics->GetRotation();
+		mat<float,4,4>* visualMatrix = carPhysics->GetMatrix();
+		mat<float,4,4> physicsMatrix;
+		mat<float, 4, 4>* charMatrix = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetMatrix();
+
+		set_identity(physicsMatrix);
+		physicsMatrix.a[3][0] = physicsPosition.a[0];
+		physicsMatrix.a[3][1] = physicsPosition.a[1];
+		physicsMatrix.a[3][2] = physicsPosition.a[2];
+
+		SetQuaternionRotation(&physicsMatrix, physicsRotation);
+			/*
+		printf("Physics Matrix:\n");
+		PrintMatrix(&physicsMatrix);
+		printf("Visual Matrix:\n");
+		PrintMatrix(visualMatrix);
+		printf("Physics -> Visual:\n");
+		mat<float, 4, 4> newMat = ConvertPhysicsMatrix(physicsMatrix);
+		PrintMatrix(&newMat);
+		printf("Character Matrix:\n");
+		PrintMatrix(charMatrix);*/
+
+		printf("Physics Orientation:\n");
+		printf("%f %f %f %f\n", physicsRotation.a[0], physicsRotation.a[1], physicsRotation.a[2], physicsRotation.a[3]);
+		quat<float> visualOrientation = GetQuaternionRotation(visualMatrix);
+
+		printf("Visual Orientation:\n");
+		printf("%f %f %f %f\n", visualOrientation.a[0], visualOrientation.a[1], visualOrientation.a[2], visualOrientation.a[3]);
+
+		quat<float> visualToPhysics = VisualToPhysicsOrientation(visualOrientation);
+
+		printf("Visual to Physics Orientation:\n");
+		printf("%f %f %f %f\n", visualToPhysics.a[0], visualToPhysics.a[1], visualToPhysics.a[2], visualToPhysics.a[3]);
+
+		quat<float> physicsToVisual = PhysicsToVisualOrientation(physicsRotation);
+
+		printf("Physics to Visual Orientation:\n");
+		printf("%f %f %f %f\n", physicsToVisual.a[0], physicsToVisual.a[1], physicsToVisual.a[2], physicsToVisual.a[3]);
+		//printf("Our physics rotation is %f %f %f %f\n", physicsRotation.a[0], physicsRotation.a[1], physicsRotation.a[2], physicsRotation.a[3]);
+		//printf("Our visual rotation is %f %f %f %f\n", visualRotation.a[0], visualRotation.a[1], visualRotation.a[2], visualRotation.a[3]);
+	}
 }
 
 void ClientController::Send(const RakNet::BitStream* bitStream, PacketPriority priority, PacketReliability reliability, char orderingChannel) {

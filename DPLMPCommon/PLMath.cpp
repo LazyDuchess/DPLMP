@@ -35,3 +35,11 @@ quat<float> GetQuaternionRotation(mat<float, 4, 4>* matrix) {
 	}
 	return convert_to<quat<float>>(extracted_rotation);
 }
+
+quat<float> VisualToPhysicsOrientation(quat<float> q) {
+	return { q.a[1], q.a[2], q.a[3], -q.a[0] };
+}
+
+quat<float> PhysicsToVisualOrientation(quat<float> q) {
+	return { -q.a[3], q.a[0], q.a[1], q.a[2] };
+}

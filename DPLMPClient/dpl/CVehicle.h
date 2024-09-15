@@ -6,4 +6,5 @@ class CVehicle {
 public:
 	void SetColor(vec<float,3> rgb);
 	void GetHandling(CHandling** handling);
+	PHBaseObj* GetPhysicsObject();
 };

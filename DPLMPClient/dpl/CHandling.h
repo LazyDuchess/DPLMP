@@ -4,4 +4,5 @@
 class CHandling {
 public:
 	PHBaseObj* GetPhysicsObject();
+	void GetOrientation(quat<float>* out);
 };

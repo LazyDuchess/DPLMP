@@ -45,21 +45,22 @@ void NetworkedCar::FrameStep() {
 	if (Vehicle == nullptr) return;
 	ClientController* client = Core::GetClientController();
 	if (ShouldBeNetworkedByLocalPlayer()) return;
-	CHandling* carHandling = nullptr;
-	Vehicle->GetHandling(&carHandling);
-	PHBaseObj* phys = carHandling->GetPhysicsObject();
+	PHBaseObj* phys = Vehicle->GetPhysicsObject();
+	mat<float, 4, 4>* matrix = phys->GetMatrix();
+	SetPosition(matrix, Position);
+	//SetQuaternionRotation(matrix, Rotation);
 	phys->SetPosition(Position);
 	phys->SetRotation(Rotation);
-	phys->SetVelocity(Velocity);
 }
 
 void NetworkedCar::OwnedStep() {
 	if (Vehicle == nullptr) return;
-	CHandling* carHandling = nullptr;
-	Vehicle->GetHandling(&carHandling);
-	PHBaseObj* phys = carHandling->GetPhysicsObject();
-	Position = phys->GetPosition();
-	Rotation = phys->GetRotation();
+	PHBaseObj* phys = Vehicle->GetPhysicsObject();
+	mat<float,4,4>* matrix = phys->GetMatrix();
+	//mat<float, 4, 4> newMatrix = ConvertPhysicsMatrix(*matrix);
+	mat<float, 4, 4> newMatrix = *matrix;
+	Position = GetPosition(&newMatrix);
+	Rotation = GetQuaternionRotation(&newMatrix);
 	Velocity = phys->GetVelocity();
 	RakNet::BitStream bs;
 	bs.Write((unsigned char)ID_CARCONTROLLER_UPDATE);
@@ -77,12 +78,13 @@ void NetworkedCar::DoSpawnCar() {
 	Vehicle = *result;
 	Vehicle->SetColor(Color);
 	LifeAcquirableVehicleManager::GetInstance()->AddVehicle(Vehicle, 1);
-	CHandling* carHandling = nullptr;
-	Vehicle->GetHandling(&carHandling);
-	PHBaseObj* phys = carHandling->GetPhysicsObject();
+	PHBaseObj* phys = Vehicle->GetPhysicsObject();
+	mat<float, 4, 4>* matrix = phys->GetMatrix();
+	SetPosition(matrix, Position);
+	//SetQuaternionRotation(matrix, Rotation);
+	phys->SetVelocity(Velocity);
 	phys->SetPosition(Position);
 	phys->SetRotation(Rotation);
-	phys->SetVelocity(Velocity);
 }
 
 void NetworkedCar::Step() {
