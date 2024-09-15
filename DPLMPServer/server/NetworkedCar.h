@@ -18,7 +18,7 @@ public:
 	unsigned int UID;
 	vec<float, 3> Position;
 	vec<float, 3> Velocity;
-	quat<float> Rotation;
+	quat<float> VisualRotation;
 	vec<float, 3> Color;
 private:
 	UIDProvider* _uidProvider;

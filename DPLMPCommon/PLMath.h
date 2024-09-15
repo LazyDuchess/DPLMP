@@ -15,6 +15,4 @@ void SetQuaternionRotation(mat<float, 4, 4>* matrix, quat<float> rotation);
 
 quat<float> GetQuaternionRotation(mat<float, 4, 4>* matrix);
 
-quat<float> VisualToPhysicsOrientation(quat<float> q);
-
-quat<float> PhysicsToVisualOrientation(quat<float> q);
+quat<float> ToDriverOrientation(quat<float> q);

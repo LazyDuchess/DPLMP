@@ -28,13 +28,14 @@ public:
 	unsigned int UID;
 	vec<float, 3> Position;
 	vec<float, 3> Velocity;
-	quat<float> Rotation;
+	quat<float> VisualRotation;
 	vec<float, 3> Color;
 private:
 	int _stepsSinceSpawn;
 	bool _requestedSpawn;
 	void OwnedStep();
 	void DoSpawnCar();
+	void UpdateTransforms();
 	const float NetworkDistance = 300.0;
 	const int SpawnNetworkStepCooldown = 2;
 };
