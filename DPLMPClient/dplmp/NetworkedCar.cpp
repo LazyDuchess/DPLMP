@@ -14,21 +14,19 @@ NetworkedCar::NetworkedCar() {
 	OwnershipKind = OwnershipKinds::Normal;
 	UID = 0;
 	Position = { 0,0,0 };
-	VisualRotation = { 0,0,0,0 };
+	Rotation = { 0,0,0,0 };
 	Color = { 1,1,1 };
 	Velocity = { 0,0,0 };
 	_requestedSpawn = false;
-	_stepsSinceSpawn = 0;
+	InPingRadius = false;
+	_wasInPingRadius = false;
 }
 
 void NetworkedCar::UpdateTransforms() {
 	PHBaseObj* phys = Vehicle->GetPhysicsObject();
-	mat<float, 4, 4>* matrix = phys->GetMatrix();
-	SetPosition(matrix, Position);
-	SetQuaternionRotation(matrix, VisualRotation);
-	phys->SetPosition(Position);
-	phys->SetRotation(VisualRotation);
+	phys->SetPositionAndOrientation(Position, Rotation, InPingRadius);
 	phys->SetVelocity(Velocity);
+	
 }
 
 void NetworkedCar::ReadFullState(RakNet::BitStream* stream) {
@@ -42,13 +40,13 @@ void NetworkedCar::ReadFullState(RakNet::BitStream* stream) {
 void NetworkedCar::WriteUpdate(RakNet::BitStream* stream) {
 	stream->Write(Position);
 	stream->Write(Velocity);
-	stream->Write(VisualRotation);
+	stream->Write(Rotation);
 }
 
 void NetworkedCar::ReadUpdate(RakNet::BitStream* stream) {
 	stream->Read(Position);
 	stream->Read(Velocity);
-	stream->Read(VisualRotation);
+	stream->Read(Rotation);
 }
 
 void NetworkedCar::FrameStep() {
@@ -62,9 +60,8 @@ void NetworkedCar::OwnedStep() {
 	if (Vehicle == nullptr) return;
 	PHBaseObj* phys = Vehicle->GetPhysicsObject();
 	mat<float,4,4>* matrix = phys->GetMatrix();
-	mat<float, 4, 4> newMatrix = *matrix;
-	Position = GetPosition(&newMatrix);
-	VisualRotation = GetQuaternionRotation(&newMatrix);
+	Position = GetPosition(matrix);
+	Rotation = phys->GetRotation();
 	Velocity = phys->GetVelocity();
 	RakNet::BitStream bs;
 	bs.Write((unsigned char)ID_CARCONTROLLER_UPDATE);
@@ -74,11 +71,10 @@ void NetworkedCar::OwnedStep() {
 }
 
 void NetworkedCar::DoSpawnCar() {
-	_stepsSinceSpawn = 0;
 	CVehicleManager* vehicleManager = CVehicleManager::GetInstance();
 	_requestedSpawn = false;
 	CVehicle* veh;
-	CVehicle** result = vehicleManager->CreateVehicle(&veh, VehicleModel, Position, VisualRotation.a[1], false, true, true);
+	CVehicle** result = vehicleManager->CreateVehicle(&veh, VehicleModel, Position, Rotation.a[1], false, true, true);
 	Vehicle = *result;
 	Vehicle->SetColor(Color);
 	LifeAcquirableVehicleManager::GetInstance()->AddVehicle(Vehicle, 1);
@@ -86,6 +82,8 @@ void NetworkedCar::DoSpawnCar() {
 }
 
 void NetworkedCar::Step() {
+	UpdatePingRadius();
+
 	if (_requestedSpawn) {
 		SpoolableResourceManager* resourceManager = SpoolableResourceManager::GetInstance();
 		if (resourceManager->IsEntityLoaded(SpooledPackageType::Vehicles, VehicleModel)) {
@@ -93,7 +91,10 @@ void NetworkedCar::Step() {
 		}
 	}
 	if (Vehicle == nullptr) return;
-	_stepsSinceSpawn++;
+
+	if (!InPingRadius)
+		UpdateTransforms();
+
 	ClientController* client = Core::GetClientController();
 	CVehicle* myVehicle = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle();
 	
@@ -102,7 +103,7 @@ void NetworkedCar::Step() {
 	else if (myVehicle != Vehicle && OwnershipKind == OwnershipKinds::Driving && Owner == client->MyGUID)
 		ReleaseOwnership();
 
-	if (ShouldBeNetworkedByLocalPlayer())
+	if (ShouldBeNetworkedByLocalPlayer() && InPingRadius)
 		OwnedStep();
 }
 
@@ -111,7 +112,10 @@ void NetworkedCar::RequestSpawnCar() {
 	if (Vehicle != nullptr) return;
 	_requestedSpawn = true;
 	SpoolableResourceManager* resourceManager = SpoolableResourceManager::GetInstance();
-	resourceManager->SetEntityPriority(SpooledPackageType::Vehicles, VehicleModel, SpoolPriority::Request);
+	if (resourceManager->IsEntityLoaded(SpooledPackageType::Vehicles, VehicleModel))
+		DoSpawnCar();
+	else
+		resourceManager->SetEntityPriority(SpooledPackageType::Vehicles, VehicleModel, SpoolPriority::Request);
 }
 
 void NetworkedCar::RequestOwnership() {
@@ -134,7 +138,6 @@ NetworkedCar::~NetworkedCar() {
 }
 
 bool NetworkedCar::ShouldBeNetworkedByLocalPlayer() {
-	if (_stepsSinceSpawn <= SpawnNetworkStepCooldown) return false;
 	if (Vehicle == nullptr) return false;
 	if (Core::GetClientController()->MyGUID == Owner)
 		return true;
@@ -142,12 +145,25 @@ bool NetworkedCar::ShouldBeNetworkedByLocalPlayer() {
 		return false;
 	CCharacter* player = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter();
 	if (player->GetVehicle() == Vehicle) return true;
-	vec<float,3> playerPosition = GetPosition(player->GetMatrix());
+	return true;
+}
 
-	float dx = Position.a[0] - playerPosition.a[0];
-	float dy = Position.a[1] - playerPosition.a[1];
-	float dz = Position.a[2] - playerPosition.a[2];
+void NetworkedCar::UpdatePingRadius() {
+	CCharacter* player = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter();
+	if (player == nullptr) {
+		InPingRadius = false;
+		_wasInPingRadius = false;
+		return;
+	}
+	vec<float,3> playerPos = GetPosition(player->GetMatrix());
+	vec<float, 3> diff = playerPos - Position;
+	InPingRadius = mag_sqr(diff) < PingRadius;
+	if (InPingRadius && !_wasInPingRadius)
+		OnEnterPingRadius();
+	_wasInPingRadius = InPingRadius;
+}
 
-	float dist = sqrt(dx * dx + dy * dy + dz * dz);
-	return dist <= NetworkDistance;
+void NetworkedCar::OnEnterPingRadius() {
+	if (Vehicle == nullptr) return;
+	Vehicle->GetPhysicsObject()->WakeUp();
 }

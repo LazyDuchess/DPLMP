@@ -10,5 +10,9 @@ public:
 	void SetVelocity(vec<float, 3> velocity);
 	quat<float> GetRotation();
 	void SetRotation(quat<float> rotation);
-	void WakeUp(bool wakeUp);
+	mat<float, 4, 4>* GetObjectToWorldMatrix();
+	void WakeUp();
+	void SetPositionAndOrientation(vec<float, 3> position, quat<float> rotation, bool wakeUp);
+	void UpdateTransMatrix();
+	void UpdateState();
 };

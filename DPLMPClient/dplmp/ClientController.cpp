@@ -123,12 +123,35 @@ void ClientController::Step() {
 		carPhysics->SetRotation({ -0.001713, 0.980018, 0.001385, -0.198899 });
 	}*/
 
+	/*
+	if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))
+	{
+		CVehicle* veh = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle();
+		PHBaseObj* carPhysics = veh->GetPhysicsObject();
+		printf("Object to world:\n");
+		PrintMatrix(carPhysics->GetObjectToWorldMatrix());
+		printf("Visual matrix:\n");
+		PrintMatrix(carPhysics->GetMatrix());
+
+		quat<float> physicsRotation = carPhysics->GetRotation();
+		vec<float, 3> physicsPosition = carPhysics->GetPosition();
+		mat<float, 4, 4> physMatrix;
+		SetPosition(&physMatrix, physicsPosition);
+		SetQuaternionRotation(&physMatrix, physicsRotation);
+
+		printf("Physics matrix:\n");
+		PrintMatrix(&physMatrix);
+		printf("Physics Rotation: %f %f %f %f\n", physicsRotation.a[0], physicsRotation.a[1], physicsRotation.a[2], physicsRotation.a[3]);
+	}
+	*/
+	/*
 	if (((GetAsyncKeyState(VK_NUMPAD2) & 0x8001) == 0x8001))
 	{
 		CVehicle* veh = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle();
 		PHBaseObj* carPhysics = veh->GetPhysicsObject();
 
 		quat<float> physicsRotation = carPhysics->GetRotation();
+		vec<float, 3> physicsPosition = carPhysics->GetPosition();
 		mat<float,4,4>* visualMatrix = carPhysics->GetMatrix();
 
 		printf("Physics Orientation:\n");
@@ -137,7 +160,17 @@ void ClientController::Step() {
 
 		printf("Visual Orientation:\n");
 		printf("%f %f %f %f\n", visualOrientation.a[0], visualOrientation.a[1], visualOrientation.a[2], visualOrientation.a[3]);
-	}
+
+		mat<float, 4, 4> physMatrix;
+		SetPosition(&physMatrix, physicsPosition);
+		SetQuaternionRotation(&physMatrix, physicsRotation);
+
+		printf("Physics Matrix:\n");
+		PrintMatrix(&physMatrix);
+
+		printf("Visual Matrix:\n");
+		PrintMatrix(visualMatrix);
+	}*/
 }
 
 void ClientController::Send(const RakNet::BitStream* bitStream, PacketPriority priority, PacketReliability reliability, char orderingChannel) {

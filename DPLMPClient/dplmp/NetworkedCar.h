@@ -21,6 +21,7 @@ public:
 	void RequestOwnership();
 	void ReleaseOwnership();
 	bool ShouldBeNetworkedByLocalPlayer();
+	void UpdateTransforms();
 	CVehicle* Vehicle;
 	tVehicleModelUID VehicleModel;
 	OwnershipKinds OwnershipKind;
@@ -28,14 +29,15 @@ public:
 	unsigned int UID;
 	vec<float, 3> Position;
 	vec<float, 3> Velocity;
-	quat<float> VisualRotation;
+	quat<float> Rotation;
 	vec<float, 3> Color;
+	bool InPingRadius;
 private:
-	int _stepsSinceSpawn;
+	bool _wasInPingRadius;
 	bool _requestedSpawn;
 	void OwnedStep();
 	void DoSpawnCar();
-	void UpdateTransforms();
-	const float NetworkDistance = 300.0;
-	const int SpawnNetworkStepCooldown = 2;
+	void UpdatePingRadius();
+	void OnEnterPingRadius();
+	const float PingRadius = 1000.0;
 };

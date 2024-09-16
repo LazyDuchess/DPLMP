@@ -26,10 +26,6 @@ void SetQuaternionRotation(mat<float, 4, 4>* matrix, quat<float> rotation) {
 	SetPosition(matrix, oldPos);
 }
 
-quat<float> ToDriverOrientation(quat<float> q) {
-	return { q.a[1], q.a[2], q.a[3], -q.a[0] };
-}
-
 quat<float> GetQuaternionRotation(mat<float, 4, 4>* matrix) {
 	mat<float, 3, 3> extracted_rotation;
 	for (int i = 0; i < 3; ++i) {
@@ -37,5 +33,5 @@ quat<float> GetQuaternionRotation(mat<float, 4, 4>* matrix) {
 			extracted_rotation.a[i][j] = matrix->a[i][j];
 		}
 	}
-	return ToDriverOrientation(convert_to<quat<float>>(extracted_rotation));
+	return convert_to<quat<float>>(extracted_rotation);
 }

@@ -69,6 +69,13 @@ void CarController::HandlePacket(RakNet::Packet* packet) {
     }
 }
 
+void CarController::UpdateAllTransforms() {
+    for (auto const& car : _cars)
+    {
+        car.second->UpdateTransforms();
+    }
+}
+
 void CarController::OnDisconnect() {
     _cars.clear();
 }

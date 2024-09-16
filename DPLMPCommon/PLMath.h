@@ -14,5 +14,3 @@ void SetEulerRotation(mat<float, 4, 4>* matrix, vec<float, 3>rotation);
 void SetQuaternionRotation(mat<float, 4, 4>* matrix, quat<float> rotation);
 
 quat<float> GetQuaternionRotation(mat<float, 4, 4>* matrix);
-
-quat<float> ToDriverOrientation(quat<float> q);

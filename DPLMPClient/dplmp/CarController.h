@@ -10,6 +10,7 @@ public:
 	void FrameStep();
 	void HandlePacket(RakNet::Packet* packet);
 	void OnDisconnect();
+	void UpdateAllTransforms();
 private:
 	static CarController* _instance;
 	std::map<unsigned int, NetworkedCar*> _cars;
