@@ -1,3 +1,6 @@
 [submodule "thirdparty/RakNet"]
 	path = thirdparty/RakNet
 	url = https://github.com/facebookarchive/RakNet
+[submodule "thirdparty/mINI"]
+	path = thirdparty/mINI
+	url = https://github.com/metayeti/mINI
