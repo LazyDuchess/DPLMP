@@ -3,6 +3,7 @@
 #include "EventListener.h"
 #include "TimeController.h"
 #include "CarController.h"
+#include <string.h>
 
 class ClientController : public EventListener {
 public:
@@ -17,10 +18,12 @@ public:
 	void Send(const RakNet::BitStream *bitStream, PacketPriority priority, PacketReliability reliability, char orderingChannel);
 	RakNet::ConnectionState GetConnectionState();
 	RakNet::RakPeerInterface* Client;
-	RakNet::SystemAddress ServerAddress;
 	RakNet::RakNetGUID MyGUID;
+	std::string ServerHost;
+	unsigned short ServerPort;
 private:
 	void HandlePackets();
+	RakNet::SystemAddress _serverAddress;
 	TimeController* _timeController;
 	CarController* _carController;
 };

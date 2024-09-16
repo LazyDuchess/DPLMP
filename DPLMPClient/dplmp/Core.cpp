@@ -10,7 +10,7 @@
 #include "../dpl/CLoadingScreen.h"
 #include "../dpl/SpoolableResourceManager.h"
 
-
+mINI::INIStructure Core::Ini;
 std::vector<EventListener*> eventListeners;
 ClientController* Core::_clientController = new ClientController();
 bool Core::InGame = false;
@@ -253,11 +253,20 @@ ClientController* Core::GetClientController() {
 }
 
 void Core::Initialize() {
-	AllocConsole();
-	freopen("CONIN$", "r", stdin);
-	freopen("CONOUT$", "w", stdout);
-	freopen("CONOUT$", "w", stderr);
+	mINI::INIFile file("DPLMP.ini");
+	file.read(Ini);
+
+	_clientController->ServerHost = Ini["Server"]["Host"];
+	_clientController->ServerPort = std::stoi(Ini["Server"]["Port"]);
+
+	if (Ini["General"]["Console"] == "true") {
+		AllocConsole();
+		freopen("CONIN$", "r", stdin);
+		freopen("CONOUT$", "w", stdout);
+		freopen("CONOUT$", "w", stderr);
+	}
 	static char jmpByte = 0xEB;
+
 
 	// REMOVE TRAFFIC HOOKS
 	// 

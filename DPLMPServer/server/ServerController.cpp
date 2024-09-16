@@ -55,7 +55,7 @@ void ServerController::HandlePackets() {
 			HandleClientDisconnected(packet->guid);
 			break;
 		case ID_NEW_INCOMING_CONNECTION:
-			printf("Client joined from %s\n", packet->systemAddress.ToString());
+			printf("Client joined from %s, GUID: %s\n", packet->systemAddress.ToString(), packet->guid.ToString());
 			HandleClientConnected(packet->guid);
 			break;
 		case ID_CARCONTROLLER_MAKEMEOWNER:

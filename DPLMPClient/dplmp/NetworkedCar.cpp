@@ -97,7 +97,7 @@ void NetworkedCar::Step() {
 
 	ClientController* client = Core::GetClientController();
 	CVehicle* myVehicle = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle();
-	
+
 	if (myVehicle == Vehicle && OwnershipKind != OwnershipKinds::Driving)
 		RequestOwnership();
 	else if (myVehicle != Vehicle && OwnershipKind == OwnershipKinds::Driving && Owner == client->MyGUID)

@@ -16,15 +16,17 @@ ClientController::ClientController() {
 	_timeController = new TimeController();
 	_carController = new CarController();
 	Client = nullptr;
-	ServerAddress = RakNet::UNASSIGNED_SYSTEM_ADDRESS;
+	_serverAddress = RakNet::UNASSIGNED_SYSTEM_ADDRESS;
 	MyGUID = RakNet::UNASSIGNED_RAKNET_GUID;
+	ServerPort = 0;
+	ServerHost = "127.0.0.1";
 }
 
 void ClientController::Connect() {
+	_serverAddress.SetBinaryAddress(ServerHost.c_str());
+	_serverAddress.SetPortHostOrder(ServerPort);
 	Client = RakNet::RakPeerInterface::GetInstance();
 	Client->SetTimeoutTime(5000, RakNet::UNASSIGNED_SYSTEM_ADDRESS);
-	ServerAddress.SetBinaryAddress("127.0.0.1");
-	ServerAddress.SetPortHostOrder(7126);
 
 	RakNet::SocketDescriptor socketDescriptor(0, 0);
 	socketDescriptor.socketFamily = AF_INET;
@@ -37,12 +39,13 @@ void ClientController::Connect() {
 
 	printf("Started client on %s\n", Client->GetMyBoundAddress().ToString(true));
 
-	RakNet::ConnectionAttemptResult result = Client->Connect("127.0.0.1", 7126, 0, 0);
+	RakNet::ConnectionAttemptResult result = Client->Connect(ServerHost.c_str(), ServerPort, 0, 0);
 	while (GetConnectionState() == RakNet::ConnectionState::IS_CONNECTING || GetConnectionState() == RakNet::ConnectionState::IS_PENDING)
 	{
 		RakSleep(100);
 	}
 	MyGUID = Client->GetMyGUID();
+	printf("Our GUID is %s\n", MyGUID.ToString());
 	printf("Connection state: %i\n", GetConnectionState());
 }
 
@@ -50,13 +53,13 @@ void ClientController::Disconnect() {
 	_carController->OnDisconnect();
 	if (Client == nullptr)
 		return;
-	Client->CloseConnection(ServerAddress, true);
+	Client->CloseConnection(_serverAddress, true);
 }
 
 RakNet::ConnectionState ClientController::GetConnectionState() {
 	if (Client == nullptr)
 		return RakNet::IS_NOT_CONNECTED;
-	return Client->GetConnectionState(ServerAddress);
+	return Client->GetConnectionState(_serverAddress);
 }
 
 void ClientController::HandlePackets() {
