@@ -100,6 +100,19 @@ void ClientController::Step() {
     {
         CLifeEventDataManager::GetInstance()->EndAllLifeEvents();
     }*/
+	if (((GetAsyncKeyState(VK_NUMPAD0) & 0x8001) == 0x8001))
+	{
+		CHandling* carHandling = nullptr;
+		CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle()->GetHandling(&carHandling);
+		PHBaseObj* carPhysics = carHandling->GetPhysicsObject();
+		auto physPos = carPhysics->GetPosition();
+		auto physRot = carPhysics->GetRotation();
+		printf("Visual Matrix:\n");
+		PrintMatrix(carPhysics->GetMatrix());
+		printf("MatrixFromPhysicsTransform:\n");
+		mat<float, 4, 4> fromPhysicsTransform = MatrixFromPhysicsTransform(physPos, physRot);
+		PrintMatrix(&fromPhysicsTransform);
+	}
 	/*
     if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))
     {

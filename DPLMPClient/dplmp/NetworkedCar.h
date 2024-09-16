@@ -39,5 +39,5 @@ private:
 	void DoSpawnCar();
 	void UpdatePingRadius();
 	void OnEnterPingRadius();
-	const float PingRadius = 1000.0;
+	const float PingRadius = 10000.0f;
 };

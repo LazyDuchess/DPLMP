@@ -155,9 +155,12 @@ void NetworkedCar::UpdatePingRadius() {
 		_wasInPingRadius = false;
 		return;
 	}
-	vec<float,3> playerPos = GetPosition(player->GetMatrix());
-	vec<float, 3> diff = playerPos - Position;
-	InPingRadius = mag_sqr(diff) < PingRadius;
+	vec<float, 3> playerPos = GetPosition(player->GetMatrix());
+	vec<float, 2> playerPos2d = { playerPos.a[0], playerPos.a[2] };
+	vec<float, 2> carPos2d = { Position.a[0], Position.a[2] };
+	vec<float, 2> diff = playerPos2d - carPos2d;
+	float dist = mag_sqr(diff);
+	InPingRadius = dist < PingRadius;
 	if (InPingRadius && !_wasInPingRadius)
 		OnEnterPingRadius();
 	_wasInPingRadius = InPingRadius;
