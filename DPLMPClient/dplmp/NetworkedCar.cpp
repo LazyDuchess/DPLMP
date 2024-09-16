@@ -67,7 +67,7 @@ void NetworkedCar::OwnedStep() {
 	bs.Write((unsigned char)ID_CARCONTROLLER_UPDATE);
 	bs.Write(UID);
 	WriteUpdate(&bs);
-	Core::GetClientController()->Send(&bs, PacketPriority::MEDIUM_PRIORITY, PacketReliability::UNRELIABLE, 0);
+	Core::GetClientController()->Send(&bs, PacketPriority::HIGH_PRIORITY, PacketReliability::UNRELIABLE, 0);
 }
 
 void NetworkedCar::DoSpawnCar() {

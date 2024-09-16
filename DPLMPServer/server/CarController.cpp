@@ -33,7 +33,7 @@ void CarController::Step() {
         car.second->WriteUpdate(&bs);
         UpdateCarOwnership(car.second);
     }
-    ServerController::GetInstance().Broadcast(&bs, PacketPriority::MEDIUM_PRIORITY, PacketReliability::UNRELIABLE, 0);
+    ServerController::GetInstance().Broadcast(&bs, PacketPriority::HIGH_PRIORITY, PacketReliability::UNRELIABLE, 0);
 }
 
 void CarController::HandleClientConnected(Client* client) {
