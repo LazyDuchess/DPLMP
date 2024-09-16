@@ -107,6 +107,8 @@ void ClientController::Step() {
 		PHBaseObj* carPhysics = carHandling->GetPhysicsObject();
 		auto physPos = carPhysics->GetPosition();
 		auto physRot = carPhysics->GetRotation();
+		printf("Physics Position: %f %f %f\n", physPos.a[0], physPos.a[1], physPos.a[2]);
+		printf("Physics Rotation: %f %f %f %f\n", physRot.a[0], physRot.a[1], physRot.a[2], physRot.a[3]);
 		printf("Visual Matrix:\n");
 		PrintMatrix(carPhysics->GetMatrix());
 		printf("MatrixFromPhysicsTransform:\n");

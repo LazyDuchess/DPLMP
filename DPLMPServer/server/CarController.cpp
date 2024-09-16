@@ -6,6 +6,7 @@
 void CarController::SpawnTestCars() {
     CreateVehicle(tVehicleModelUID::tVehicleModelUID_Andec_Punk, { -2192.623047, 0.983009, 3798.156982 }, { -0.004596, 0.953209, 0.003860, 0.302252 }, { 1,1,1 });
     CreateVehicle(tVehicleModelUID::tVehicleModelUID_Colonna_Racer, { -2206.804199, 0.971373, 3799.105713 }, { -0.006162, 0.999548, 0.002203, 0.029355 }, { 1,1,1 });
+    CreateVehicle(tVehicleModelUID::tVehicleModelUID_Colonna_Racer, { -2210.195312, 0.652893, 3797.874023 }, { 0.000468, 0.927555, 0.005415, 0.373647 }, { 1,1,1 });
     CreateVehicle(tVehicleModelUID::tVehicleModelUID_Cerrano_Punk, { -2222.952881, 0.944798, 3777.477783 }, { 0.000233, 0.999407, 0.001934, -0.034380 }, { 1,1,1 });
     CreateVehicle(tVehicleModelUID::tVehicleModelUID_Hotrod, { -2256.548340, 0.963347, 3786.693848 }, { -0.001177, 0.841995, 0.002749, 0.539477 }, { 1,1,1 });
     CreateVehicle(tVehicleModelUID::tVehicleModelUID_M700, { -2230.223877, 0.892499, 3833.030762 }, { -0.002102, -0.024875, -0.000051, 0.999688 }, { 1,1,1 });
