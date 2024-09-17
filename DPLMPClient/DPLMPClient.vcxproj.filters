@@ -198,6 +198,9 @@
     <ClInclude Include="dpl\CVehicleManager.h" />
     <ClInclude Include="dpl\LifeAcquirableVehicleManager.h" />
     <ClInclude Include="dpl\CLoadingScreen.h" />
+    <ClInclude Include="dpl\CMusicSystem.h" />
+    <ClInclude Include="dpl\CGameMusicManager.h" />
+    <ClInclude Include="dplmp\MusicRandomizer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dplmp\Core.cpp">
@@ -338,6 +341,9 @@
     <ClCompile Include="dpl\CVehicleManager.cpp" />
     <ClCompile Include="dpl\LifeAcquirableVehicleManager.cpp" />
     <ClCompile Include="dpl\CLoadingScreen.cpp" />
+    <ClCompile Include="dpl\CGameMusicManager.cpp" />
+    <ClCompile Include="dpl\CMusicSystem.cpp" />
+    <ClCompile Include="dplmp\MusicRandomizer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\thirdparty\RakNet\Source\RakNet.vcproj" />

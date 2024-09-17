@@ -117,6 +117,7 @@ void ClientController::Step() {
 		printf("MatrixFromPhysicsTransform:\n");
 		mat<float, 4, 4> fromPhysicsTransform = MatrixFromPhysicsTransform(physPos, physRot);
 		PrintMatrix(&fromPhysicsTransform);
+		printf("This car's handling is at %p\n", carHandling);
 	}
 	/*
     if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))

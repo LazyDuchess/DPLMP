@@ -257,9 +257,12 @@
     <ClInclude Include="dplmp\CarController.h" />
     <ClInclude Include="dplmp\ClientController.h" />
     <ClInclude Include="dplmp\Core.h" />
+    <ClInclude Include="dplmp\MusicRandomizer.h" />
     <ClInclude Include="dplmp\NetworkedCar.h" />
+    <ClInclude Include="dpl\CGameMusicManager.h" />
     <ClInclude Include="dpl\CHandling.h" />
     <ClInclude Include="dpl\CLoadingScreen.h" />
+    <ClInclude Include="dpl\CMusicSystem.h" />
     <ClInclude Include="dpl\CVehicle.h" />
     <ClInclude Include="dplmp\Hooking.h" />
     <ClInclude Include="dplmp\EventListener.h" />
@@ -406,9 +409,11 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="dplmp\MusicRandomizer.cpp" />
     <ClCompile Include="dplmp\NetworkedCar.cpp" />
     <ClCompile Include="dpl\CCharacter.cpp" />
     <ClCompile Include="dpl\CCharacterManager.cpp" />
+    <ClCompile Include="dpl\CGameMusicManager.cpp" />
     <ClCompile Include="dpl\CHandling.cpp" />
     <ClCompile Include="dpl\CLifeEnvironment.cpp" />
     <ClCompile Include="dplmp\TimeController.cpp" />
@@ -416,6 +421,7 @@
     <ClCompile Include="dpl\CLifeInstances.cpp" />
     <ClCompile Include="dpl\CLifeSystem.cpp" />
     <ClCompile Include="dpl\CLoadingScreen.cpp" />
+    <ClCompile Include="dpl\CMusicSystem.cpp" />
     <ClCompile Include="dpl\CPlayerDriverBehaviour.cpp" />
     <ClCompile Include="dpl\CVehicle.cpp" />
     <ClCompile Include="dpl\CVehicleManager.cpp" />
