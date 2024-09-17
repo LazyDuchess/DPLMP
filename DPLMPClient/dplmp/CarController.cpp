@@ -4,7 +4,7 @@
 CarController* CarController::_instance = nullptr;
 
 CarController::CarController() {
-	_cars = std::map<unsigned int, NetworkedCar*>();
+	_carByIndex = std::map<unsigned int, NetworkedCar*>();
     _instance = this;
 }
 
@@ -12,15 +12,26 @@ CarController* CarController::GetInstance() {
     return _instance;
 }
 
+NetworkedCar* CarController::GetCarForVehicle(CVehicle* vehicle) {
+    if (vehicle == nullptr) return nullptr;
+	for (auto const& car : _carByIndex)
+	{
+		if (car.second->Vehicle == vehicle) {
+			return car.second;
+		}
+	}
+	return nullptr;
+}
+
 void CarController::Step() {
-    for (auto const& car : _cars)
+    for (auto const& car : _carByIndex)
     {
         car.second->Step();
     }
 }
 
 void CarController::FrameStep() {
-    for (auto const& car : _cars)
+    for (auto const& car : _carByIndex)
     {
         car.second->FrameStep();
     }
@@ -39,7 +50,7 @@ void CarController::HandlePacket(RakNet::Packet* packet) {
             bs.Read(car->UID);
             car->ReadFullState(&bs);
             car->RequestSpawnCar();
-            _cars[car->UID] = car;
+            _carByIndex[car->UID] = car;
         }
         break;
     }
@@ -50,8 +61,8 @@ void CarController::HandlePacket(RakNet::Packet* packet) {
         for (int i = 0; i < carCount; i++) {
             unsigned int uid = 0;
             bs.Read(uid);
-            if (_cars.find(uid) != _cars.end()) {
-                _cars[uid]->ReadUpdate(&bs);
+            if (_carByIndex.find(uid) != _carByIndex.end()) {
+                _carByIndex[uid]->ReadUpdate(&bs);
 			}
         }
         break;
@@ -60,9 +71,9 @@ void CarController::HandlePacket(RakNet::Packet* packet) {
     {
         unsigned int uid = 0;
         bs.Read(uid);
-        if (_cars.find(uid) != _cars.end()) {
-            bs.Read(_cars[uid]->Owner);
-            bs.Read(_cars[uid]->OwnershipKind);
+        if (_carByIndex.find(uid) != _carByIndex.end()) {
+            bs.Read(_carByIndex[uid]->Owner);
+            bs.Read(_carByIndex[uid]->OwnershipKind);
         }
         break;
     }
@@ -70,12 +81,12 @@ void CarController::HandlePacket(RakNet::Packet* packet) {
 }
 
 void CarController::UpdateAllTransforms() {
-    for (auto const& car : _cars)
+    for (auto const& car : _carByIndex)
     {
         car.second->UpdateTransforms();
     }
 }
 
 void CarController::OnDisconnect() {
-    _cars.clear();
+    _carByIndex.clear();
 }

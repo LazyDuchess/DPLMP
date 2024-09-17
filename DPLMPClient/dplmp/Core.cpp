@@ -11,6 +11,7 @@
 #include "../dpl/SpoolableResourceManager.h"
 #include "../dpl/CStateFrontend.h"
 #include "../dpl/CStateReload.h"
+#include "../dpl/CHandling.h"
 
 mINI::INIStructure Core::Ini;
 std::vector<EventListener*> eventListeners;
@@ -101,16 +102,43 @@ void __stdcall OnGameStepHook() {
 				loadingScreen->Deactivate();
 		}
 	}
+}
 
-	if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))
-	{
-		CStateFrontend* frontend = CStateFrontend::GetInstance();
-		frontend->EnterGame();
-	}
+bool __stdcall ShouldSendManipulationPacket(CHandling* handling) {
+	CVehicle* vehicle = handling->GetVehicle();
+	if (vehicle == nullptr) return true;
+	CarController* carController = CarController::GetInstance();
+	if (carController == nullptr) return true;
+	NetworkedCar* netCar = carController->GetCarForVehicle(vehicle);
+	if (netCar == nullptr) return true;
+	return netCar->ShouldBeNetworkedByLocalPlayer();
+}
 
-	if (((GetAsyncKeyState(VK_NUMPAD2) & 0x8001) == 0x8001))
-	{
-		CStateReload::GetInstance()->OnEnterState();
+void __declspec(naked) CarHandlingSendManipulationPacketHook() {
+	__asm {
+		push edi
+		push edx
+		push ecx
+		push ebp
+		push ebx
+		push esi
+		push esi
+		call ShouldSendManipulationPacket
+		pop esi
+		pop ebx
+		pop ebp
+		pop ecx
+		pop edx
+		pop edi
+		cmp al, 00
+		je TrueCond
+		//Original
+		cmp byte ptr [esi+0x18C],00
+		mov eax, 0x0058CB7A
+		jmp eax
+		TrueCond:
+			mov eax, 0x0058CB6D
+			jmp eax
 	}
 }
 
@@ -333,6 +361,9 @@ void Core::Initialize() {
 	// Keep game running while unfocused. Injects main game loop.
 	Hooking::Nop((BYTE*)0x005715E2, 2);
 	Hooking::Nop((BYTE*)0x005715E8, 6);
+
+	// Only send controls for local cars. Inject CCarHandling::SendManipulationPacket.
+	Hooking::MakeJMP((BYTE*)0x0058cb73, (DWORD)CarHandlingSendManipulationPacketHook, 7);
 
 	// Spawn us immediately
 	OverrideLevels(thenLevelsOverride);

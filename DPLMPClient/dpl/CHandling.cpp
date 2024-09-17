@@ -9,3 +9,7 @@ void CHandling::GetOrientation(quat<float>* out) {
 	int vTableAddr = *(int*)this;
 	return ((void(__thiscall*)(CHandling*, quat<float>*)) * (int*)(vTableAddr + 0x10))(this, out);
 }
+
+CVehicle* CHandling::GetVehicle() {
+	return *(CVehicle**)((int)this + 0x244);
+}

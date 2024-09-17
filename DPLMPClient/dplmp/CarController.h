@@ -11,7 +11,8 @@ public:
 	void HandlePacket(RakNet::Packet* packet);
 	void OnDisconnect();
 	void UpdateAllTransforms();
+	NetworkedCar* GetCarForVehicle(CVehicle* vehicle);
 private:
 	static CarController* _instance;
-	std::map<unsigned int, NetworkedCar*> _cars;
+	std::map<unsigned int, NetworkedCar*> _carByIndex;
 };

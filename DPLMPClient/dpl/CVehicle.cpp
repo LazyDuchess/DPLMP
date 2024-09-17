@@ -1,4 +1,5 @@
 #include "CVehicle.h"
+#include "CHandling.h"
 
 void CVehicle::SetColor(vec<float,3> rgb)
 {

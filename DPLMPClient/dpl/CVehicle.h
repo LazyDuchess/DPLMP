@@ -1,6 +1,8 @@
 #pragma once
 #include "../../DPLMPCommon/PLMath.h"
-#include "CHandling.h"
+#include "PHBaseObj.h"
+
+class CHandling;
 
 class CVehicle {
 public:
