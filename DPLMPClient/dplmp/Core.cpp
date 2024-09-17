@@ -9,6 +9,8 @@
 #include "../dpl/CLifeEventDataManager.h"
 #include "../dpl/CLoadingScreen.h"
 #include "../dpl/SpoolableResourceManager.h"
+#include "../dpl/CStateFrontend.h"
+#include "../dpl/CStateReload.h"
 
 mINI::INIStructure Core::Ini;
 std::vector<EventListener*> eventListeners;
@@ -73,6 +75,8 @@ void __declspec(naked) SetGameSpeedMultiplierHook() {
 	}
 }
 
+bool enteringGame = false;
+
 void __stdcall OnGameStepHook() {
 	steady_clock::time_point now = steady_clock::now();
 	std::chrono::duration<float> delta = now - beginTimePoint;
@@ -96,6 +100,17 @@ void __stdcall OnGameStepHook() {
 			if (spoolStatus != 0)
 				loadingScreen->Deactivate();
 		}
+	}
+
+	if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))
+	{
+		CStateFrontend* frontend = CStateFrontend::GetInstance();
+		frontend->EnterGame();
+	}
+
+	if (((GetAsyncKeyState(VK_NUMPAD2) & 0x8001) == 0x8001))
+	{
+		CStateReload::GetInstance()->OnEnterState();
 	}
 }
 
@@ -314,6 +329,10 @@ void Core::Initialize() {
 
 	// Hit us up on CLoadingScreen::Activate
 	Hooking::MakeJMP((BYTE*)0x004a76ef, (DWORD)LoadingScreenActivateHook, 9);
+
+	// Keep game running while unfocused. Injects main game loop.
+	Hooking::Nop((BYTE*)0x005715E2, 2);
+	Hooking::Nop((BYTE*)0x005715E8, 6);
 
 	// Spawn us immediately
 	OverrideLevels(thenLevelsOverride);

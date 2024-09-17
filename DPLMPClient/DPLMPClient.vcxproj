@@ -262,6 +262,8 @@
     <ClInclude Include="dpl\CHandling.h" />
     <ClInclude Include="dpl\CLoadingScreen.h" />
     <ClInclude Include="dpl\CMusicSystem.h" />
+    <ClInclude Include="dpl\CStateFrontend.h" />
+    <ClInclude Include="dpl\CStateReload.h" />
     <ClInclude Include="dpl\CVehicle.h" />
     <ClInclude Include="dplmp\Hooking.h" />
     <ClInclude Include="dplmp\EventListener.h" />
@@ -421,6 +423,8 @@
     <ClCompile Include="dpl\CLoadingScreen.cpp" />
     <ClCompile Include="dpl\CMusicSystem.cpp" />
     <ClCompile Include="dpl\CPlayerDriverBehaviour.cpp" />
+    <ClCompile Include="dpl\CStateFrontend.cpp" />
+    <ClCompile Include="dpl\CStateReload.cpp" />
     <ClCompile Include="dpl\CVehicle.cpp" />
     <ClCompile Include="dpl\CVehicleManager.cpp" />
     <ClCompile Include="dpl\LifeAcquirableVehicleManager.cpp" />

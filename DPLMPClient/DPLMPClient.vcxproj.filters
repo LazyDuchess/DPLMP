@@ -200,6 +200,8 @@
     <ClInclude Include="dpl\CLoadingScreen.h" />
     <ClInclude Include="dpl\CMusicSystem.h" />
     <ClInclude Include="dpl\CGameMusicManager.h" />
+    <ClInclude Include="dpl\CStateFrontend.h" />
+    <ClInclude Include="dpl\CStateReload.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dplmp\Core.cpp">
@@ -342,6 +344,8 @@
     <ClCompile Include="dpl\CLoadingScreen.cpp" />
     <ClCompile Include="dpl\CGameMusicManager.cpp" />
     <ClCompile Include="dpl\CMusicSystem.cpp" />
+    <ClCompile Include="dpl\CStateFrontend.cpp" />
+    <ClCompile Include="dpl\CStateReload.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\thirdparty\RakNet\Source\RakNet.vcproj" />
