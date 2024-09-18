@@ -37,7 +37,7 @@ quat<float> GetQuaternionRotation(mat<float, 4, 4>* matrix) {
 }
 
 //Decompilation of obUpdateTransMatrix
-mat<float, 4, 4> MatrixFromPhysicsTransform(vec<float, 3> &position, quat<float> &rotation) {
+mat<float, 4, 4> VisualMatrixFromPhysicsTransform(vec<float, 3> &position, quat<float> &rotation) {
 	float px = position.a[0];
 	float py = position.a[1];
 	float pz = position.a[2];

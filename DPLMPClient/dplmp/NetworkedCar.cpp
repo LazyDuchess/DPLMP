@@ -28,7 +28,8 @@ void NetworkedCar::UpdateTransforms(bool instant) {
 	quat<float> smoothRot = Rotation;
 	if (!instant) {
 		smoothPos = Lerp(phys->GetPosition(), Position, Core::DeltaTime * LerpSpeed);
-		smoothRot = SLerp180Clamped(phys->GetRotation(), Rotation, Core::DeltaTime * SlerpSpeed);
+		// this doesn't work great :(
+		//smoothRot = SLerp180Clamped(phys->GetRotation(), Rotation, Core::DeltaTime * SlerpSpeed);
 	}
 	vec<float, 4> pos4d = { smoothPos.a[0], smoothPos.a[1], smoothPos.a[2], 1.0 };
 	phys->SetPositionAndOrientation(&pos4d, &smoothRot, InPingRadius);

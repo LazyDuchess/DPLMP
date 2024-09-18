@@ -15,7 +15,7 @@ void SetQuaternionRotation(mat<float, 4, 4>* matrix, quat<float> rotation);
 
 quat<float> GetQuaternionRotation(mat<float, 4, 4>* matrix);
 
-mat<float, 4, 4> MatrixFromPhysicsTransform(vec<float, 3>& position, quat<float>& rotation);
+mat<float, 4, 4> VisualMatrixFromPhysicsTransform(vec<float, 3>& position, quat<float>& rotation);
 
 vec<float, 3> Lerp(vec<float, 3> start, vec<float, 3> end, float percent);
 
