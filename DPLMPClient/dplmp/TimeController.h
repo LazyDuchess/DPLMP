@@ -5,7 +5,7 @@ class TimeController {
 public:
 	TimeController();
 	void HandlePacket(RakNet::Packet* packet);
-	void Step();
+	void FrameStep();
 private:
 	float _timeStep;
 	float _currentHour;

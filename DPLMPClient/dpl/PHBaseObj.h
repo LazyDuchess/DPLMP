@@ -12,7 +12,8 @@ public:
 	void SetRotation(quat<float> rotation);
 	mat<float, 4, 4>* GetObjectToWorldMatrix();
 	void WakeUp();
-	void SetPositionAndOrientation(vec<float, 3> position, quat<float> rotation, bool wakeUp);
+	// wakeup goes unused for now.
+	void SetPositionAndOrientation(vec<float, 4>* position, quat<float>* rotation, bool wakeUp);
 	void UpdateTransMatrix();
 	void UpdateState();
 };

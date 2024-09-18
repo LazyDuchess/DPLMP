@@ -21,7 +21,7 @@ public:
 	void RequestOwnership();
 	void ReleaseOwnership();
 	bool ShouldBeNetworkedByLocalPlayer();
-	void UpdateTransforms();
+	void UpdateTransforms(bool instant);
 	CVehicle* Vehicle;
 	tVehicleModelUID VehicleModel;
 	OwnershipKinds OwnershipKind;
@@ -40,4 +40,6 @@ private:
 	void UpdatePingRadius();
 	void OnEnterPingRadius();
 	const float PingRadius = 10000.0f;
+	const float LerpSpeed = 10.0f;
+	const float SlerpSpeed = 40.0f;
 };

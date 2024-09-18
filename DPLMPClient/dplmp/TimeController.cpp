@@ -10,11 +10,11 @@ TimeController::TimeController() {
 	_currentHour = 0.0;
 }
 
-void TimeController::Step() {
+void TimeController::FrameStep() {
 	auto env = CLifeEnvironment::GetInstance();
 	if (env == nullptr) return;
 	env->TimeStep = 0.0;
-	_currentHour = ClampHours(_currentHour + (_timeStep * Core::FixedDeltaTime));
+	_currentHour = ClampHours(_currentHour + (_timeStep * Core::DeltaTime));
 	env->LifeTime = HoursToLifeTime(_currentHour);
 }
 

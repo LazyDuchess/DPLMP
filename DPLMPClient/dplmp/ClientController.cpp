@@ -10,6 +10,7 @@
 #include "../dpl/SpoolableResourceManager.h"
 #include "../dpl/CLifeEventDataManager.h"
 #include "../dpl/CLifeInstances.h"
+#include "../dpl/CHandling.h"
 #include "../../DPLMPCommon/PLMath.h"
 
 ClientController::ClientController() {
@@ -90,12 +91,12 @@ void PrintMatrix(mat<float, 4, 4>* matrix) {
 
 void ClientController::FrameStep() {
 	_carController->FrameStep();
+	_timeController->FrameStep();
 }
 
 void ClientController::Step() {
     HandlePackets();
 	_carController->Step();
-    _timeController->Step();
     // EXPERIMENTS
     // Crashes when going near a side mission area. Might work if the save has no side missions available?
     /*

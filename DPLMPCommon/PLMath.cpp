@@ -80,3 +80,19 @@ mat<float, 4, 4> MatrixFromPhysicsTransform(vec<float, 3> &position, quat<float>
 
 	return matrix;
 }
+
+vec<float, 3> Lerp(vec<float, 3> start, vec<float, 3> end, float percent) {
+	if (percent > 1.0)
+		percent = 1.0;
+	if (percent < 0.0)
+		percent = 0.0;
+	return start + ((end - start) * percent);
+}
+
+quat<float> SLerp180Clamped(quat<float> start, quat<float> end, float percent) {
+	if (percent > 1.0)
+		percent = 1.0;
+	if (percent < 0.0)
+		percent = 0.0;
+	return slerp180(start, end, percent);
+}

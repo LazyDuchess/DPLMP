@@ -22,11 +22,17 @@ NetworkedCar::NetworkedCar() {
 	_wasInPingRadius = false;
 }
 
-void NetworkedCar::UpdateTransforms() {
+void NetworkedCar::UpdateTransforms(bool instant) {
 	PHBaseObj* phys = Vehicle->GetPhysicsObject();
-	phys->SetPositionAndOrientation(Position, Rotation, InPingRadius);
+	vec<float, 3> smoothPos = Position;
+	quat<float> smoothRot = Rotation;
+	if (!instant) {
+		smoothPos = Lerp(phys->GetPosition(), Position, Core::DeltaTime * LerpSpeed);
+		smoothRot = SLerp180Clamped(phys->GetRotation(), Rotation, Core::DeltaTime * SlerpSpeed);
+	}
+	vec<float, 4> pos4d = { smoothPos.a[0], smoothPos.a[1], smoothPos.a[2], 1.0 };
+	phys->SetPositionAndOrientation(&pos4d, &smoothRot, InPingRadius);
 	phys->SetVelocity(Velocity);
-	
 }
 
 void NetworkedCar::ReadFullState(RakNet::BitStream* stream) {
@@ -53,7 +59,7 @@ void NetworkedCar::FrameStep() {
 	if (Vehicle == nullptr) return;
 	ClientController* client = Core::GetClientController();
 	if (ShouldBeNetworkedByLocalPlayer()) return;
-	UpdateTransforms();
+	UpdateTransforms(false);
 }
 
 void NetworkedCar::OwnedStep() {
@@ -78,7 +84,7 @@ void NetworkedCar::DoSpawnCar() {
 	Vehicle = *result;
 	Vehicle->SetColor(Color);
 	LifeAcquirableVehicleManager::GetInstance()->AddVehicle(Vehicle, 1);
-	UpdateTransforms();
+	UpdateTransforms(true);
 }
 
 void NetworkedCar::Step() {
@@ -93,7 +99,7 @@ void NetworkedCar::Step() {
 	if (Vehicle == nullptr) return;
 
 	if (!InPingRadius)
-		UpdateTransforms();
+		UpdateTransforms(true);
 
 	ClientController* client = Core::GetClientController();
 	CVehicle* myVehicle = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle();

@@ -20,7 +20,9 @@ bool Core::InGame = false;
 
 typedef std::chrono::steady_clock steady_clock;
 float Core::FixedDeltaTime = 0.0;
-steady_clock::time_point beginTimePoint;
+float Core::DeltaTime = 0.0;
+steady_clock::time_point fixedTimePoint;
+steady_clock::time_point deltaTimePoint;
 steady_clock::time_point beginLoadingTime;
 const float minimumLoadingTime = 0.1;
 
@@ -80,8 +82,10 @@ bool enteringGame = false;
 
 void __stdcall OnGameStepHook() {
 	steady_clock::time_point now = steady_clock::now();
-	std::chrono::duration<float> delta = now - beginTimePoint;
-	Core::FixedDeltaTime = delta.count();
+	std::chrono::duration<float> fixeddelta = now - fixedTimePoint;
+	std::chrono::duration<float> delta = now - deltaTimePoint;
+	Core::FixedDeltaTime = fixeddelta.count();
+	Core::DeltaTime = delta.count();
 	for (auto listener : eventListeners) {
 		listener->FrameStep();
 	}
@@ -89,7 +93,7 @@ void __stdcall OnGameStepHook() {
 		for (auto listener : eventListeners) {
 			listener->Step();
 		}
-		beginTimePoint = steady_clock::now();
+		fixedTimePoint = steady_clock::now();
 	}
 
 	// HACK? Loading screen will wait for life events that are not stepping, so instead we just disable it when resources are loaded.
@@ -102,6 +106,7 @@ void __stdcall OnGameStepHook() {
 				loadingScreen->Deactivate();
 		}
 	}
+	deltaTimePoint = steady_clock::now();
 }
 
 bool __stdcall ShouldSendManipulationPacket(CHandling* handling) {
@@ -260,9 +265,8 @@ void __declspec(naked) GameStepHook() {
 		pop edx
 		pop eax
 		pop edi
-		mov eax, 0x0070C728
-		mov ecx, [eax]
-		mov eax, 0x00545aa9
+		// go back home
+		mov eax, 0x005715EE
 		jmp eax
 	}
 }
@@ -342,7 +346,8 @@ void Core::Initialize() {
 	// CoreCreate Character - CreatePlayer case.
 	Hooking::MakeJMP((BYTE*)0x0047f8ed, (DWORD)CreatePlayerHook, 7);
 	// GameStep? - Main game loop.
-	Hooking::MakeJMP((BYTE*)0x00545aa3, (DWORD)GameStepHook, 6);
+	//Hooking::MakeJMP((BYTE*)0x00545aa3, (DWORD)GameStepHook, 6);
+	Hooking::MakeJMP((BYTE*)0x005715E8, (DWORD)GameStepHook, 6);
 	// DestroyInGameStuff? Exiting ingame state
 	Hooking::MakeJMP((BYTE*)0x004723fc, (DWORD)ExitInGameStateHook, 5);
 	// CLifeSystem::Initialise Entering ingame state
@@ -360,7 +365,7 @@ void Core::Initialize() {
 
 	// Keep game running while unfocused. Injects main game loop.
 	Hooking::Nop((BYTE*)0x005715E2, 2);
-	Hooking::Nop((BYTE*)0x005715E8, 6);
+	//Hooking::Nop((BYTE*)0x005715E8, 6);
 
 	// Only send controls for local cars. Inject CCarHandling::SendManipulationPacket.
 	Hooking::MakeJMP((BYTE*)0x0058cb73, (DWORD)CarHandlingSendManipulationPacketHook, 7);

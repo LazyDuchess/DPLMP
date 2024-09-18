@@ -83,7 +83,7 @@ void CarController::HandlePacket(RakNet::Packet* packet) {
 void CarController::UpdateAllTransforms() {
     for (auto const& car : _carByIndex)
     {
-        car.second->UpdateTransforms();
+        car.second->UpdateTransforms(true);
     }
 }
 

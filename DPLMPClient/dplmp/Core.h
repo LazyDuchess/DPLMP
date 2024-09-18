@@ -12,6 +12,7 @@ public:
 	static void Initialize();
 	static void RegisterEventListener(EventListener* listener);
 	static float FixedDeltaTime;
+	static float DeltaTime;
 	static void AllowMissionObjectCreation(bool allow);
 	static mINI::INIStructure Ini;
 private:

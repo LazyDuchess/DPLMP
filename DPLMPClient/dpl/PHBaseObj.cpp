@@ -43,16 +43,8 @@ quat<float> PHBaseObj::GetRotation() {
 	return quat<float>{ *(float*)(this + 0xA0), * (float*)(this + 0xA4), * (float*)(this + 0xA8), * (float*)(this + 0xAC) };
 }
 
-void PHBaseObj::SetPositionAndOrientation(vec<float, 3> position, quat<float> rotation, bool wakeUp) {
-	SetPosition(position);
-	if (wakeUp)
-		WakeUp();
-	UpdateTransMatrix();
-	SetRotation(rotation);
-	//UpdateState();
-	if (wakeUp)
-		WakeUp();
-	UpdateTransMatrix();
+void PHBaseObj::SetPositionAndOrientation(vec<float, 4>* position, quat<float>* rotation, bool wakeUp) {
+	((void(__fastcall*)(PHBaseObj*, vec<float, 4>*, quat<float>*))0x005c4eda)(this, position, rotation);
 }
 
 void PHBaseObj::UpdateTransMatrix() {
