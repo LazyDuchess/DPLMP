@@ -258,6 +258,7 @@
     <ClInclude Include="dplmp\CharacterController.h" />
     <ClInclude Include="dplmp\ClientController.h" />
     <ClInclude Include="dplmp\Core.h" />
+    <ClInclude Include="dplmp\ExtrasController.h" />
     <ClInclude Include="dplmp\NetworkedCar.h" />
     <ClInclude Include="dplmp\NetworkedCharacter.h" />
     <ClInclude Include="dpl\CGameMusicManager.h" />
@@ -409,6 +410,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="dplmp\ExtrasController.cpp" />
     <ClCompile Include="dplmp\Hooking.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../pch.h</PrecompiledHeaderFile>

@@ -2,6 +2,7 @@
 #include "Core.h"
 #include "Hooking.h"
 #include "ClientController.h"
+#include "ExtrasController.h"
 #include <iostream>
 #include <vector>
 #include <chrono>
@@ -115,6 +116,13 @@ void __stdcall OnGameStepHook() {
 		vec<float, 4> charPos = { charMatrix->a[3][0] + 5.0, charMatrix->a[3][1] , charMatrix->a[3][2], 1 };
 		CCharacterManager::GetInstance()->CreateCharacter(29, &charPos, 1);
 	}*/
+	if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))
+	{
+		CCharacter* playerChar = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter();
+		CVehicle* car = CarController::GetInstance()->Cars.begin()->second->Vehicle;
+		//playerChar->EnterVehicle(car, 0, false);
+		playerChar->EnterVehicleImmediate(car, 1, true);
+	}
 
 	deltaTimePoint = steady_clock::now();
 }
@@ -122,6 +130,8 @@ void __stdcall OnGameStepHook() {
 bool __stdcall ShouldSendManipulationPacket(CHandling* handling) {
 	CVehicle* vehicle = handling->GetVehicle();
 	if (vehicle == nullptr) return true;
+	CCharacter* playerChar = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter();
+	if (playerChar->GetCarSeat() != 0) return false;
 	CarController* carController = CarController::GetInstance();
 	if (carController == nullptr) return true;
 	NetworkedCar* netCar = carController->GetCarForVehicle(vehicle);
@@ -384,6 +394,7 @@ void Core::Initialize() {
 	OverrideLevels(thenLevelsOverride);
 
 	RegisterEventListener(_clientController);
+	RegisterEventListener(new ExtrasController());
 }
 
 void Core::RegisterEventListener(EventListener* listener) {

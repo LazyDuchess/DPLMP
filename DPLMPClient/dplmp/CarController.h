@@ -12,7 +12,7 @@ public:
 	void OnDisconnect();
 	void UpdateAllTransforms();
 	NetworkedCar* GetCarForVehicle(CVehicle* vehicle);
+	std::map<unsigned int, NetworkedCar*> Cars;
 private:
 	static CarController* _instance;
-	std::map<unsigned int, NetworkedCar*> _carByIndex;
 };

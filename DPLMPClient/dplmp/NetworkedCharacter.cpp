@@ -5,7 +5,6 @@
 #include "../../DPLMPCommon/PLMessageIdentifiers.h"
 #include "../dpl/CCharacterManager.h"
 #include "../dpl/CLifeSystem.h"
-#define LOCAL_DEBUG
 
 NetworkedCharacter::NetworkedCharacter() {
 	Owner = RakNet::UNASSIGNED_RAKNET_GUID;

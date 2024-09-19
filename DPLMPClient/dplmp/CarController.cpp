@@ -4,7 +4,7 @@
 CarController* CarController::_instance = nullptr;
 
 CarController::CarController() {
-	_carByIndex = std::map<unsigned int, NetworkedCar*>();
+	Cars = std::map<unsigned int, NetworkedCar*>();
     _instance = this;
 }
 
@@ -14,7 +14,7 @@ CarController* CarController::GetInstance() {
 
 NetworkedCar* CarController::GetCarForVehicle(CVehicle* vehicle) {
     if (vehicle == nullptr) return nullptr;
-	for (auto const& car : _carByIndex)
+	for (auto const& car : Cars)
 	{
 		if (car.second->Vehicle == vehicle) {
 			return car.second;
@@ -24,14 +24,14 @@ NetworkedCar* CarController::GetCarForVehicle(CVehicle* vehicle) {
 }
 
 void CarController::Step() {
-    for (auto const& car : _carByIndex)
+    for (auto const& car : Cars)
     {
         car.second->Step();
     }
 }
 
 void CarController::FrameStep() {
-    for (auto const& car : _carByIndex)
+    for (auto const& car : Cars)
     {
         car.second->FrameStep();
     }
@@ -50,7 +50,7 @@ void CarController::HandlePacket(RakNet::Packet* packet) {
             bs.Read(car->UID);
             car->ReadFullState(&bs);
             car->RequestSpawnCar();
-            _carByIndex[car->UID] = car;
+            Cars[car->UID] = car;
         }
         break;
     }
@@ -61,8 +61,8 @@ void CarController::HandlePacket(RakNet::Packet* packet) {
         for (int i = 0; i < carCount; i++) {
             unsigned int uid = 0;
             bs.Read(uid);
-            if (_carByIndex.find(uid) != _carByIndex.end()) {
-                _carByIndex[uid]->ReadUpdate(&bs);
+            if (Cars.find(uid) != Cars.end()) {
+                Cars[uid]->ReadUpdate(&bs);
 			}
         }
         break;
@@ -71,9 +71,9 @@ void CarController::HandlePacket(RakNet::Packet* packet) {
     {
         unsigned int uid = 0;
         bs.Read(uid);
-        if (_carByIndex.find(uid) != _carByIndex.end()) {
-            bs.Read(_carByIndex[uid]->Owner);
-            bs.Read(_carByIndex[uid]->OwnershipKind);
+        if (Cars.find(uid) != Cars.end()) {
+            bs.Read(Cars[uid]->Owner);
+            bs.Read(Cars[uid]->OwnershipKind);
         }
         break;
     }
@@ -81,12 +81,12 @@ void CarController::HandlePacket(RakNet::Packet* packet) {
 }
 
 void CarController::UpdateAllTransforms() {
-    for (auto const& car : _carByIndex)
+    for (auto const& car : Cars)
     {
         car.second->UpdateTransforms(true);
     }
 }
 
 void CarController::OnDisconnect() {
-    _carByIndex.clear();
+    Cars.clear();
 }

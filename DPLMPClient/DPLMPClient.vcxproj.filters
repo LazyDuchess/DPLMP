@@ -204,6 +204,7 @@
     <ClInclude Include="dpl\CStateReload.h" />
     <ClInclude Include="dplmp\CharacterController.h" />
     <ClInclude Include="dplmp\NetworkedCharacter.h" />
+    <ClInclude Include="dplmp\ExtrasController.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dplmp\Core.cpp">
@@ -350,6 +351,7 @@
     <ClCompile Include="dpl\CStateReload.cpp" />
     <ClCompile Include="dplmp\CharacterController.cpp" />
     <ClCompile Include="dplmp\NetworkedCharacter.cpp" />
+    <ClCompile Include="dplmp\ExtrasController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\thirdparty\RakNet\Source\RakNet.vcproj" />
