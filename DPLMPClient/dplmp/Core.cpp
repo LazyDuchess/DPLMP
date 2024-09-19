@@ -118,10 +118,9 @@ void __stdcall OnGameStepHook() {
 	}*/
 	if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))
 	{
-		CCharacter* playerChar = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter();
-		CVehicle* car = CarController::GetInstance()->Cars.begin()->second->Vehicle;
-		//playerChar->EnterVehicle(car, 0, false);
-		playerChar->EnterVehicleImmediate(car, 1, true);
+		CHandling* handling = nullptr;
+		CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle()->GetHandling(&handling);
+		printf("Handling points to %p\n", handling);
 	}
 
 	deltaTimePoint = steady_clock::now();
@@ -137,6 +136,46 @@ bool __stdcall ShouldSendManipulationPacket(CHandling* handling) {
 	NetworkedCar* netCar = carController->GetCarForVehicle(vehicle);
 	if (netCar == nullptr) return true;
 	return netCar->ShouldBeNetworkedByLocalPlayer();
+}
+
+void __stdcall OnCCharacterEnterVehicle(CCharacter* character, CVehicle* vehicle, int seat, bool toDriverSeat) {
+	CCharacter* player = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter();
+	if (player != character) return;
+	NetworkedCar* netCar = CarController::GetInstance()->GetCarForVehicle(vehicle);
+	if (netCar == nullptr) return;
+	CharacterController* charController = CharacterController::GetInstance();
+	NetworkedCharacter* netChar = charController->GetLocalCharacter();
+	if (netChar == nullptr) return;
+	charController->SendEnterVehiclePacket(netChar->UID, netCar->UID, seat, toDriverSeat);
+}
+
+void __declspec(naked) CCharacterEnterVehicleHook() {
+	__asm {
+		mov eax, esp
+		push edi
+		push edx
+		push ecx
+		push ebp
+		push ebx
+		push esi
+		push [eax+0xC]
+		push [eax+0x8]
+		push [eax+0x4]
+		push ecx
+		call OnCCharacterEnterVehicle
+		pop esi
+		pop ebx
+		pop ebp
+		pop ecx
+		pop edx
+		pop edi
+		//Original
+		push ebp
+		mov ebp, esp
+		and esp,-10
+		mov eax, 0x004EBF4C
+		jmp eax
+	}
 }
 
 void __declspec(naked) CarHandlingSendManipulationPacketHook() {
@@ -389,6 +428,9 @@ void Core::Initialize() {
 
 	// Only send controls for local cars. Inject CCarHandling::SendManipulationPacket.
 	Hooking::MakeJMP((BYTE*)0x0058cb73, (DWORD)CarHandlingSendManipulationPacketHook, 7);
+
+	// Send enter vehicle
+	Hooking::MakeJMP((BYTE*)0x004ebf46, (DWORD)CCharacterEnterVehicleHook, 6);
 
 	// Spawn us immediately
 	OverrideLevels(thenLevelsOverride);

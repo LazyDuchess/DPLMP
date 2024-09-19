@@ -53,5 +53,10 @@ void CharacterController::HandlePacket(RakNet::Packet* packet) {
             }
         }
     }
+    case ID_CHARACTERCONTROLLER_ENTERVEHICLE:
+    {
+        RakNet::BitStream outStream(packet->data, packet->length, true);
+        ServerController::GetInstance().Broadcast(&outStream, PacketPriority::HIGH_PRIORITY, PacketReliability::RELIABLE_ORDERED, 0);
+    }
     }
 }

@@ -32,6 +32,11 @@ public:
 	quat<float> Rotation;
 	vec<float, 3> Color;
 	bool InPingRadius;
+	float Steering;
+	bool Handbrake;
+	float Power;
+	float Throttle;
+	float RPM;
 private:
 	bool _wasInPingRadius;
 	bool _requestedSpawn;

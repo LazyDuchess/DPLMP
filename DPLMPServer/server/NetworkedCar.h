@@ -20,6 +20,11 @@ public:
 	vec<float, 3> Velocity;
 	quat<float> Rotation;
 	vec<float, 3> Color;
+	float Steering;
+	bool Handbrake;
+	float Power;
+	float Throttle;
+	float RPM;
 private:
 	UIDProvider* _uidProvider;
 };

@@ -5,6 +5,7 @@
 #include "../dpl/CLifeSystem.h"
 #include "../../DPLMPCommon/PLMessageIdentifiers.h"
 #include "../dpl/LifeAcquirableVehicleManager.h"
+#include "../dpl/CHandling.h"
 
 
 NetworkedCar::NetworkedCar() {
@@ -20,9 +21,16 @@ NetworkedCar::NetworkedCar() {
 	_requestedSpawn = false;
 	InPingRadius = false;
 	_wasInPingRadius = false;
+	Steering = 0;
+	Handbrake = false;
+	Power = 0;
+	Throttle = 0;
+	RPM = 0;
 }
 
 void NetworkedCar::UpdateTransforms(bool instant) {
+	CHandling* handling = nullptr;
+	Vehicle->GetHandling(&handling);
 	PHBaseObj* phys = Vehicle->GetPhysicsObject();
 	vec<float, 3> smoothPos = Position;
 	quat<float> smoothRot = Rotation;
@@ -34,6 +42,11 @@ void NetworkedCar::UpdateTransforms(bool instant) {
 	vec<float, 4> pos4d = { smoothPos.a[0], smoothPos.a[1], smoothPos.a[2], 1.0 };
 	phys->SetPositionAndOrientation(&pos4d, &smoothRot, InPingRadius);
 	phys->SetVelocity(Velocity);
+	handling->SetSteering(Steering);
+	handling->SetHandbraking(Handbrake);
+	handling->SetPower(Power);
+	handling->SetThrottle(Throttle);
+	handling->SetRPM(RPM);
 }
 
 void NetworkedCar::ReadFullState(RakNet::BitStream* stream) {
@@ -48,12 +61,22 @@ void NetworkedCar::WriteUpdate(RakNet::BitStream* stream) {
 	stream->Write(Position);
 	stream->Write(Velocity);
 	stream->Write(Rotation);
+	stream->Write(Steering);
+	stream->Write(Handbrake);
+	stream->Write(Power);
+	stream->Write(Throttle);
+	stream->Write(RPM);
 }
 
 void NetworkedCar::ReadUpdate(RakNet::BitStream* stream) {
 	stream->Read(Position);
 	stream->Read(Velocity);
 	stream->Read(Rotation);
+	stream->Read(Steering);
+	stream->Read(Handbrake);
+	stream->Read(Power);
+	stream->Read(Throttle);
+	stream->Read(RPM);
 }
 
 void NetworkedCar::FrameStep() {
@@ -65,11 +88,18 @@ void NetworkedCar::FrameStep() {
 
 void NetworkedCar::OwnedStep() {
 	if (Vehicle == nullptr) return;
+	CHandling* handling = nullptr;
+	Vehicle->GetHandling(&handling);
 	PHBaseObj* phys = Vehicle->GetPhysicsObject();
 	mat<float,4,4>* matrix = phys->GetMatrix();
 	Position = GetPosition(matrix);
 	Rotation = phys->GetRotation();
 	Velocity = phys->GetVelocity();
+	Steering = handling->GetSteering();
+	Handbrake = handling->GetHandbraking();
+	Power = handling->GetPower();
+	Throttle = handling->GetThrottle();
+	RPM = handling->GetRPM();
 	RakNet::BitStream bs;
 	bs.Write((unsigned char)ID_CARCONTROLLER_UPDATE);
 	bs.Write(UID);
@@ -103,11 +133,12 @@ void NetworkedCar::Step() {
 		UpdateTransforms(true);
 
 	ClientController* client = Core::GetClientController();
-	CVehicle* myVehicle = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetVehicle();
+	CCharacter* myCharacter = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter();
+	CVehicle* myVehicle = myCharacter->GetVehicle();
 
-	if (myVehicle == Vehicle && OwnershipKind != OwnershipKinds::Driving)
+	if (myVehicle == Vehicle && OwnershipKind != OwnershipKinds::Driving && myCharacter->GetCarSeat() == 0)
 		RequestOwnership();
-	else if (myVehicle != Vehicle && OwnershipKind == OwnershipKinds::Driving && Owner == client->MyGUID)
+	else if ((myVehicle != Vehicle || myCharacter->GetCarSeat() != 0) && OwnershipKind == OwnershipKinds::Driving && Owner == client->MyGUID)
 		ReleaseOwnership();
 
 	if (ShouldBeNetworkedByLocalPlayer() && InPingRadius)
@@ -151,7 +182,7 @@ bool NetworkedCar::ShouldBeNetworkedByLocalPlayer() {
 	else
 		return false;
 	CCharacter* player = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter();
-	if (player->GetVehicle() == Vehicle) return true;
+	if (player->GetVehicle() == Vehicle && player->GetCarSeat() == 0) return true;
 	return true;
 }
 

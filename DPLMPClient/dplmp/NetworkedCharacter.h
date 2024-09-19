@@ -20,6 +20,9 @@ public:
 	vec<float, 3> Position;
 	quat<float> Rotation;
 	bool Player;
+	unsigned int CarUID;
+	int CarSeat;
+	float Health;
 private:
 	const float LerpSpeed = 10.0f;
 	const float SlerpSpeed = 10.0f;

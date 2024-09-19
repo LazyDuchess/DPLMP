@@ -81,6 +81,7 @@ void ClientController::HandlePackets() {
 				break;
 			case ID_CHARACTERCONTROLLER_FULLSTATE:
 			case ID_CHARACTERCONTROLLER_UPDATE:
+			case ID_CHARACTERCONTROLLER_ENTERVEHICLE:
 				_charController->HandlePacket(packet);
 				break;
 			}

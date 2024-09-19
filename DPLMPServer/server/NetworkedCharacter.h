@@ -16,6 +16,9 @@ public:
 	vec<float, 3> Position;
 	quat<float> Rotation;
 	bool Player;
+	unsigned int CarUID;
+	int CarSeat;
+	float Health;
 private:
 	UIDProvider* _uidProvider;
 };

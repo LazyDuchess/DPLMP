@@ -10,6 +10,7 @@ NetworkedCar::NetworkedCar(tVehicleModelUID model, vec<float, 3> position, quat<
 	Owner = RakNet::UNASSIGNED_RAKNET_GUID;
 	OwnershipKind = OwnershipKinds::Normal;
 	Color = color;
+	Steering = 0;
 }
 
 void NetworkedCar::WriteFullState(RakNet::BitStream* stream) {
@@ -24,10 +25,20 @@ void NetworkedCar::WriteUpdate(RakNet::BitStream* stream) {
 	stream->Write(Position);
 	stream->Write(Velocity);
 	stream->Write(Rotation);
+	stream->Write(Steering);
+	stream->Write(Handbrake);
+	stream->Write(Power);
+	stream->Write(Throttle);
+	stream->Write(RPM);
 }
 
 void NetworkedCar::ReadUpdate(RakNet::BitStream* stream) {
     stream->Read(Position);
     stream->Read(Velocity);
     stream->Read(Rotation);
+	stream->Read(Steering);
+	stream->Read(Handbrake);
+	stream->Read(Power);
+	stream->Read(Throttle);
+	stream->Read(RPM);
 }

@@ -45,3 +45,11 @@ void CCharacter::ExitVehicle()
 int CCharacter::GetCarSeat() {
 	return *(int*)((int)this + 0x5d0);
 }
+
+float CCharacter::GetHealth() {
+	return *(float*)((int)this + 0x684);
+}
+
+void CCharacter::SetHealth(float health) {
+	*(float*)((int)this + 0x684) = health;
+}

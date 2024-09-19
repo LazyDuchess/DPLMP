@@ -13,4 +13,6 @@ public:
 	void ExitVehicle();
 	void EnterVehicleImmediate(CVehicle* pVehicle, int nDoor, bool unk);
 	int GetCarSeat();
+	float GetHealth();
+	void SetHealth(float health);
 };
