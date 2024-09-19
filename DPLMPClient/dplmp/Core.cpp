@@ -108,13 +108,13 @@ void __stdcall OnGameStepHook() {
 				loadingScreen->Deactivate();
 		}
 	}
-
+	/*
 	if (((GetAsyncKeyState(VK_NUMPAD1) & 0x8001) == 0x8001))
 	{
 		mat<float,4,4>* charMatrix = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter()->GetMatrix();
 		vec<float, 4> charPos = { charMatrix->a[3][0] + 5.0, charMatrix->a[3][1] , charMatrix->a[3][2], 1 };
 		CCharacterManager::GetInstance()->CreateCharacter(29, &charPos, 1);
-	}
+	}*/
 
 	deltaTimePoint = steady_clock::now();
 }

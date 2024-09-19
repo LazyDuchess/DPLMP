@@ -16,6 +16,7 @@
 ClientController::ClientController() {
 	_timeController = new TimeController();
 	_carController = new CarController();
+	_charController = new CharacterController();
 	Client = nullptr;
 	_serverAddress = RakNet::UNASSIGNED_SYSTEM_ADDRESS;
 	MyGUID = RakNet::UNASSIGNED_RAKNET_GUID;
@@ -52,6 +53,7 @@ void ClientController::Connect() {
 
 void ClientController::Disconnect() {
 	_carController->OnDisconnect();
+	_charController->OnDisconnect();
 	if (Client == nullptr)
 		return;
 	Client->CloseConnection(_serverAddress, true);
@@ -77,6 +79,10 @@ void ClientController::HandlePackets() {
 			case ID_CARCONTROLLER_UPDATE:
 				_carController->HandlePacket(packet);
 				break;
+			case ID_CHARACTERCONTROLLER_FULLSTATE:
+			case ID_CHARACTERCONTROLLER_UPDATE:
+				_charController->HandlePacket(packet);
+				break;
 			}
 		}
 	}
@@ -91,12 +97,14 @@ void PrintMatrix(mat<float, 4, 4>* matrix) {
 
 void ClientController::FrameStep() {
 	_carController->FrameStep();
+	_charController->FrameStep();
 	_timeController->FrameStep();
 }
 
 void ClientController::Step() {
     HandlePackets();
 	_carController->Step();
+	_charController->Step();
 }
 
 void ClientController::Send(const RakNet::BitStream* bitStream, PacketPriority priority, PacketReliability reliability, char orderingChannel) {

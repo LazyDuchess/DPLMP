@@ -5,12 +5,14 @@
 NetworkedCharacter* CharacterController::CreatePlayerCharacter(Client* client, vec<float, 3> position, quat<float> rotation, int model) {
     NetworkedCharacter* ch = new NetworkedCharacter(model, position, rotation, &_charUIDProvider);
     ch->Owner = client->GUID;
+    ch->Player = true;
     _characters[ch->UID] = ch;
     return ch;
 }
 
 void CharacterController::HandleClientConnected(Client* client) {
-    CreatePlayerCharacter(client, { -2189.333496, 0.067905, 3787.999512 }, {0,0,0,1}, 123);
+    CreatePlayerCharacter(client, { -2189.333496, 0.067905, 3787.999512 }, {0,0,1,0}, 123);
+    BroadcastCharacters();
 }
 
 void CharacterController::BroadcastCharacters() {

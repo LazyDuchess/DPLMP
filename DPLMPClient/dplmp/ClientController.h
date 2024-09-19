@@ -3,6 +3,7 @@
 #include "EventListener.h"
 #include "TimeController.h"
 #include "CarController.h"
+#include "CharacterController.h"
 #include <string.h>
 
 class ClientController : public EventListener {
@@ -26,4 +27,5 @@ private:
 	RakNet::SystemAddress _serverAddress;
 	TimeController* _timeController;
 	CarController* _carController;
+	CharacterController* _charController;
 };

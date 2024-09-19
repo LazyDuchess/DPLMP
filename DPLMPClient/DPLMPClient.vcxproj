@@ -255,9 +255,11 @@
     <ClInclude Include="..\thirdparty\RakNet\Source\XBox360Includes.h" />
     <ClInclude Include="..\thirdparty\RakNet\Source\_FindFirst.h" />
     <ClInclude Include="dplmp\CarController.h" />
+    <ClInclude Include="dplmp\CharacterController.h" />
     <ClInclude Include="dplmp\ClientController.h" />
     <ClInclude Include="dplmp\Core.h" />
     <ClInclude Include="dplmp\NetworkedCar.h" />
+    <ClInclude Include="dplmp\NetworkedCharacter.h" />
     <ClInclude Include="dpl\CGameMusicManager.h" />
     <ClInclude Include="dpl\CHandling.h" />
     <ClInclude Include="dpl\CLoadingScreen.h" />
@@ -398,6 +400,7 @@
     <ClCompile Include="..\thirdparty\RakNet\Source\_FindFirst.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="dplmp\CarController.cpp" />
+    <ClCompile Include="dplmp\CharacterController.cpp" />
     <ClCompile Include="dplmp\ClientController.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../pch.h</PrecompiledHeaderFile>
@@ -411,6 +414,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="dplmp\NetworkedCar.cpp" />
+    <ClCompile Include="dplmp\NetworkedCharacter.cpp" />
     <ClCompile Include="dpl\CCharacter.cpp" />
     <ClCompile Include="dpl\CCharacterManager.cpp" />
     <ClCompile Include="dpl\CGameMusicManager.cpp" />
