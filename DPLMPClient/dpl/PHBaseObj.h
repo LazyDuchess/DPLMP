@@ -16,4 +16,6 @@ public:
 	void SetPositionAndOrientation(vec<float, 4>* position, quat<float>* rotation, bool wakeUp);
 	void UpdateTransMatrix();
 	void UpdateState();
+	void GetAngularVelocity(vec<float, 4>* angularVelocity);
+	void SetAngularVelocity(vec<float, 4>* angularVelocity);
 };

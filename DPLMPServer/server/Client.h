@@ -7,5 +7,4 @@ public:
 	Client(RakNet::RakNetGUID guid);
 	RakNet::RakNetGUID GUID;
 	NetworkedCharacter* Character;
-	void SetCharacter(NetworkedCharacter* character);
 };

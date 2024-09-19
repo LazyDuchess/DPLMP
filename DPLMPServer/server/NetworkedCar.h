@@ -18,6 +18,7 @@ public:
 	unsigned int UID;
 	vec<float, 3> Position;
 	vec<float, 3> Velocity;
+	vec<float, 4> AngularVelocity;
 	quat<float> Rotation;
 	vec<float, 3> Color;
 	float Steering;

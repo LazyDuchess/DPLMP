@@ -94,5 +94,8 @@ quat<float> SLerp180Clamped(quat<float> start, quat<float> end, float percent) {
 		percent = 1.0;
 	if (percent < 0.0)
 		percent = 0.0;
-	return slerp180(start, end, percent);
+	quat<float> newStart = { start.a[0], start.a[1], start.a[3], start.a[2] };
+	quat<float> newEnd = { end.a[0], end.a[1], end.a[3], end.a[2] };
+	quat<float> slerpResult = slerp180(newStart, newEnd, percent);
+	return { slerpResult.a[0], slerpResult.a[1],slerpResult.a[3], slerpResult.a[2] };
 }

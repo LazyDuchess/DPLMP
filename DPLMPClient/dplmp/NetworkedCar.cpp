@@ -18,6 +18,7 @@ NetworkedCar::NetworkedCar() {
 	Rotation = { 0,0,0,0 };
 	Color = { 1,1,1 };
 	Velocity = { 0,0,0 };
+	AngularVelocity = { 0,0,0,0 };
 	_requestedSpawn = false;
 	InPingRadius = false;
 	_wasInPingRadius = false;
@@ -37,11 +38,12 @@ void NetworkedCar::UpdateTransforms(bool instant) {
 	if (!instant) {
 		smoothPos = Lerp(phys->GetPosition(), Position, Core::DeltaTime * LerpSpeed);
 		// this doesn't work great :(
-		//smoothRot = SLerp180Clamped(phys->GetRotation(), Rotation, Core::DeltaTime * SlerpSpeed);
+		smoothRot = SLerp180Clamped(phys->GetRotation(), Rotation, Core::DeltaTime * SlerpSpeed);
 	}
 	vec<float, 4> pos4d = { smoothPos.a[0], smoothPos.a[1], smoothPos.a[2], 1.0 };
 	phys->SetPositionAndOrientation(&pos4d, &smoothRot, InPingRadius);
 	phys->SetVelocity(Velocity);
+	phys->SetAngularVelocity(&AngularVelocity);
 	handling->SetSteering(Steering);
 	handling->SetHandbraking(Handbrake);
 	handling->SetPower(Power);
@@ -60,6 +62,7 @@ void NetworkedCar::ReadFullState(RakNet::BitStream* stream) {
 void NetworkedCar::WriteUpdate(RakNet::BitStream* stream) {
 	stream->Write(Position);
 	stream->Write(Velocity);
+	stream->Write(AngularVelocity);
 	stream->Write(Rotation);
 	stream->Write(Steering);
 	stream->Write(Handbrake);
@@ -71,6 +74,7 @@ void NetworkedCar::WriteUpdate(RakNet::BitStream* stream) {
 void NetworkedCar::ReadUpdate(RakNet::BitStream* stream) {
 	stream->Read(Position);
 	stream->Read(Velocity);
+	stream->Read(AngularVelocity);
 	stream->Read(Rotation);
 	stream->Read(Steering);
 	stream->Read(Handbrake);
@@ -95,6 +99,7 @@ void NetworkedCar::OwnedStep() {
 	Position = GetPosition(matrix);
 	Rotation = phys->GetRotation();
 	Velocity = phys->GetVelocity();
+	phys->GetAngularVelocity(&AngularVelocity);
 	Steering = handling->GetSteering();
 	Handbrake = handling->GetHandbraking();
 	Power = handling->GetPower();

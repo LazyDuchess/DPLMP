@@ -23,7 +23,9 @@ public:
 	unsigned int CarUID;
 	int CarSeat;
 	float Health;
+	float TeleportTimer;
 private:
 	const float LerpSpeed = 10.0f;
 	const float SlerpSpeed = 10.0f;
+	const float CarTeleportThreshold = 5.0f;
 };

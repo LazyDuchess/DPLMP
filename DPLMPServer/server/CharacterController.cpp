@@ -6,6 +6,7 @@ NetworkedCharacter* CharacterController::CreatePlayerCharacter(Client* client, v
     NetworkedCharacter* ch = new NetworkedCharacter(model, position, rotation, &_charUIDProvider);
     ch->Owner = client->GUID;
     ch->Player = true;
+    client->Character = ch;
     _characters[ch->UID] = ch;
     return ch;
 }

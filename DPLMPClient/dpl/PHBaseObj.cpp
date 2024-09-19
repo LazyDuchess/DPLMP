@@ -54,3 +54,11 @@ void PHBaseObj::UpdateTransMatrix() {
 void PHBaseObj::UpdateState() {
 	((void(__thiscall*)(PHBaseObj*))0x005cdb3a)(this);
 }
+
+void PHBaseObj::GetAngularVelocity(vec<float, 4>* angularVelocity) {
+	((void(__fastcall*)(PHBaseObj*, vec<float, 4>*))0x005c560f)(this, angularVelocity);
+}
+
+void PHBaseObj::SetAngularVelocity(vec<float, 4>* angularVelocity) {
+	((void(__fastcall*)(PHBaseObj*, vec<float, 4>*))0x005c514b)(this, angularVelocity);
+}

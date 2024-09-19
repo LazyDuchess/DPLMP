@@ -2,6 +2,7 @@
 #include "PLMessageIdentifiers.h"
 #include "ServerController.h"
 #include "OwnershipKinds.h"
+#include "Core.h"
 
 void CarController::SpawnTestCars() {
     CreateVehicle(tVehicleModelUID::tVehicleModelUID_Andec_Punk, { -2192.623047, 0.983009, 3798.156982 }, { -0.004596, 0.953209, 0.003860, 0.302252 }, { 1,1,1 });
@@ -22,6 +23,15 @@ NetworkedCar* CarController::CreateVehicle(tVehicleModelUID model, vec<float, 3>
 
 void CarController::Initialize() {
     SpawnTestCars();
+    _ownershipRefreshTimer = 0;
+}
+
+void CarController::RefreshOwnerships() {
+    for (auto const& car : _cars)
+    {
+        UpdateCarOwnership(car.second);
+        BroadcastOwnership(car.second);
+    }
 }
 
 void CarController::Step() {
@@ -32,9 +42,13 @@ void CarController::Step() {
     {
         bs.Write(car.second->UID);
         car.second->WriteUpdate(&bs);
-        UpdateCarOwnership(car.second);
     }
     ServerController::GetInstance().Broadcast(&bs, PacketPriority::HIGH_PRIORITY, PacketReliability::UNRELIABLE, 0);
+    _ownershipRefreshTimer += Core::FixedDeltaTime;
+    if (_ownershipRefreshTimer >= OwnershipRefreshInterval) {
+        RefreshOwnerships();
+		_ownershipRefreshTimer = 0;
+	}
 }
 
 void CarController::HandleClientConnected(Client* client) {
@@ -125,11 +139,27 @@ void CarController::UpdateCarOwnership(NetworkedCar* car) {
     else
     {
         if (car->OwnershipKind == OwnershipKinds::Normal) {
-            if (car->Owner == RakNet::UNASSIGNED_RAKNET_GUID) {
-                car->Owner = server.Clients.begin()->first;
-                car->OwnershipKind = OwnershipKinds::Normal;
-                BroadcastOwnership(car);
-            }
+            Client* closestClient = GetClientClosestToCar(car);
+            if (closestClient == nullptr)
+                car->Owner = RakNet::UNASSIGNED_RAKNET_GUID;
+            else
+                car->Owner = closestClient->GUID;
         }
     }
+}
+
+Client* CarController::GetClientClosestToCar(NetworkedCar* car) {
+    Client* result = nullptr;
+    float closestDistance = 9999999;
+    for (auto const& client : ServerController::GetInstance().Clients)
+    {
+        if (client.second->Character == nullptr) continue;
+        vec<float, 3> diff = client.second->Character->Position - car->Position;
+        float dist = mag_sqr(diff);
+        if (dist < closestDistance) {
+            result = client.second;
+            closestDistance = dist;
+        }
+    }
+    return result;
 }

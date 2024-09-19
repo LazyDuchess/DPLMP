@@ -29,6 +29,7 @@ public:
 	unsigned int UID;
 	vec<float, 3> Position;
 	vec<float, 3> Velocity;
+	vec<float, 4> AngularVelocity;
 	quat<float> Rotation;
 	vec<float, 3> Color;
 	bool InPingRadius;
@@ -46,5 +47,5 @@ private:
 	void OnEnterPingRadius();
 	const float PingRadius = 10000.0f;
 	const float LerpSpeed = 10.0f;
-	const float SlerpSpeed = 40.0f;
+	const float SlerpSpeed = 10.0f;
 };

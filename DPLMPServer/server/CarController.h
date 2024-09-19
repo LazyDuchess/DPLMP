@@ -19,4 +19,8 @@ private:
 	std::map<unsigned int, NetworkedCar*> _cars;
 	void SpawnTestCars();
 	void UpdateCarOwnership(NetworkedCar* car);
+	void RefreshOwnerships();
+	float _ownershipRefreshTimer = 0;
+	const float OwnershipRefreshInterval = 1.0;
+	Client* GetClientClosestToCar(NetworkedCar* car);
 };

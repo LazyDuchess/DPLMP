@@ -17,6 +17,7 @@ NetworkedCharacter::NetworkedCharacter() {
 	CarUID = 0;
 	CarSeat = -1;
 	Health = 1;
+	TeleportTimer = 0;
 }
 
 NetworkedCharacter::~NetworkedCharacter() {
@@ -85,16 +86,22 @@ void NetworkedCharacter::Step() {
 		if (CarUID != 0) {
 			targetNetCar = carController->Cars.find(CarUID)->second;
 		}
-		if (currentNetCar != targetNetCar) {
-			if (vehicle != nullptr)
-				Character->ExitVehicle();
-			else
-			{
-				if (targetNetCar != nullptr && CarSeat != -1 && targetNetCar->Vehicle != nullptr) {
-					Character->EnterVehicleImmediate(targetNetCar->Vehicle, CarSeat, true);
+		if (currentNetCar != targetNetCar || CarSeat != Character->GetCarSeat()) {
+			TeleportTimer += Core::FixedDeltaTime;
+			if (TeleportTimer > CarTeleportThreshold) {
+				if (vehicle != nullptr)
+					Character->ExitVehicle();
+				else
+				{
+					if (targetNetCar != nullptr && CarSeat != -1 && targetNetCar->Vehicle != nullptr) {
+						Character->EnterVehicleImmediate(targetNetCar->Vehicle, CarSeat, true);
+					}
 				}
+				TeleportTimer = 0;
 			}
 		}
+		else
+			TeleportTimer = 0;
 	}
 }
 
