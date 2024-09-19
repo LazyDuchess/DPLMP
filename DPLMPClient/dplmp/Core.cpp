@@ -139,13 +139,12 @@ bool __stdcall ShouldSendManipulationPacket(CHandling* handling) {
 }
 
 void __stdcall OnCCharacterEnterVehicle(CCharacter* character, CVehicle* vehicle, int seat, bool toDriverSeat) {
-	CCharacter* player = CLifeSystem::GetInstance()->Player->DriverBehaviour->GetCharacter();
-	if (player != character) return;
+	CharacterController* charController = CharacterController::GetInstance();
+	NetworkedCharacter* netChar = charController->GetNetCharacterForCharacter(character);
+	if (netChar == nullptr) return;
+	if (netChar->Owner != Core::GetClientController()->MyGUID) return;
 	NetworkedCar* netCar = CarController::GetInstance()->GetCarForVehicle(vehicle);
 	if (netCar == nullptr) return;
-	CharacterController* charController = CharacterController::GetInstance();
-	NetworkedCharacter* netChar = charController->GetLocalCharacter();
-	if (netChar == nullptr) return;
 	charController->SendEnterVehiclePacket(netChar->UID, netCar->UID, seat, toDriverSeat);
 }
 

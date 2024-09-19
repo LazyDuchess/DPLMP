@@ -12,6 +12,7 @@ public:
 	void HandlePacket(RakNet::Packet* packet);
 	void OnDisconnect();
 	void SendEnterVehiclePacket(unsigned int uid, unsigned int vehicleId, int seat, bool toDriverSeat);
+	NetworkedCharacter* GetNetCharacterForCharacter(CCharacter* character);
 	NetworkedCharacter* GetLocalCharacter();
 private:
 	std::map<unsigned int, NetworkedCharacter*> _charByIndex;

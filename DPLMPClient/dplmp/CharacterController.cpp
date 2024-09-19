@@ -51,6 +51,15 @@ NetworkedCharacter* CharacterController::GetLocalCharacter() {
     return nullptr;
 }
 
+NetworkedCharacter* CharacterController::GetNetCharacterForCharacter(CCharacter* character) {
+    for (auto it = _charByIndex.begin(); it != _charByIndex.end(); it++) {
+        NetworkedCharacter* ch = it->second;
+        if (ch->Character == character)
+            return ch;
+    }
+    return nullptr;
+}
+
 void CharacterController::HandlePacket(RakNet::Packet* packet) {
     RakNet::BitStream bs(packet->data, packet->length, false);
     bs.IgnoreBytes(1);

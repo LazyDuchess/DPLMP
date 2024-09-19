@@ -28,4 +28,6 @@ private:
 	const float LerpSpeed = 10.0f;
 	const float SlerpSpeed = 10.0f;
 	const float CarTeleportThreshold = 5.0f;
+	void TeleportIntoTheirVehicle();
+	bool InCorrectVehicle();
 };

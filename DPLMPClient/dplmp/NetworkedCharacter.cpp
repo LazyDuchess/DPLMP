@@ -76,27 +76,10 @@ void NetworkedCharacter::Step() {
 	}
 	else
 	{
-		CarController* carController = CarController::GetInstance();
-		CVehicle* vehicle = Character->GetVehicle();
-		NetworkedCar* targetNetCar = nullptr;
-		NetworkedCar* currentNetCar = nullptr;
-		if (vehicle != nullptr) {
-			currentNetCar = carController->GetCarForVehicle(vehicle);
-		}
-		if (CarUID != 0) {
-			targetNetCar = carController->Cars.find(CarUID)->second;
-		}
-		if (currentNetCar != targetNetCar || CarSeat != Character->GetCarSeat()) {
+		if (!InCorrectVehicle()) {
 			TeleportTimer += Core::FixedDeltaTime;
 			if (TeleportTimer > CarTeleportThreshold) {
-				if (vehicle != nullptr)
-					Character->ExitVehicle();
-				else
-				{
-					if (targetNetCar != nullptr && CarSeat != -1 && targetNetCar->Vehicle != nullptr) {
-						Character->EnterVehicleImmediate(targetNetCar->Vehicle, CarSeat, true);
-					}
-				}
+				TeleportIntoTheirVehicle();
 				TeleportTimer = 0;
 			}
 		}
@@ -136,4 +119,44 @@ void NetworkedCharacter::Spawn() {
 	mat<float,4,4>* charMatrix = Character->GetMatrix();
 	SetPosition(charMatrix, Position);
 	SetQuaternionRotation(charMatrix, Rotation);
+	TeleportIntoTheirVehicle();
+}
+
+bool NetworkedCharacter::InCorrectVehicle() {
+	CarController* carController = CarController::GetInstance();
+	CVehicle* vehicle = Character->GetVehicle();
+	NetworkedCar* targetNetCar = nullptr;
+	NetworkedCar* currentNetCar = nullptr;
+	if (vehicle != nullptr) {
+		currentNetCar = carController->GetCarForVehicle(vehicle);
+	}
+	if (CarUID != 0) {
+		targetNetCar = carController->Cars.find(CarUID)->second;
+	}
+	if (currentNetCar == nullptr && targetNetCar == nullptr) return true;
+	if (currentNetCar != targetNetCar || CarSeat != Character->GetCarSeat())
+		return false;
+}
+
+void NetworkedCharacter::TeleportIntoTheirVehicle() {
+	CarController* carController = CarController::GetInstance();
+	CVehicle* vehicle = Character->GetVehicle();
+	NetworkedCar* targetNetCar = nullptr;
+	NetworkedCar* currentNetCar = nullptr;
+	if (vehicle != nullptr) {
+		currentNetCar = carController->GetCarForVehicle(vehicle);
+	}
+	if (CarUID != 0) {
+		targetNetCar = carController->Cars.find(CarUID)->second;
+	}
+	if (currentNetCar != targetNetCar || CarSeat != Character->GetCarSeat()) {
+		if (vehicle != nullptr)
+			Character->ExitVehicle();
+		else
+		{
+			if (targetNetCar != nullptr && CarSeat != -1 && targetNetCar->Vehicle != nullptr) {
+				Character->EnterVehicleImmediate(targetNetCar->Vehicle, CarSeat, true);
+			}
+		}
+	}
 }
