@@ -3,7 +3,7 @@
 NetworkedCar::NetworkedCar(tVehicleModelUID model, vec<float, 3> position, quat<float> rotation, UIDProvider* uidProvider, vec<float,3> color) {
 	VehicleModel = model;
 	Position = position;
-	VisualRotation = rotation;
+	Rotation = rotation;
 	Velocity = { 0,0,0 };
 	_uidProvider = uidProvider;
 	UID = _uidProvider->GetUID();
@@ -23,11 +23,11 @@ void NetworkedCar::WriteFullState(RakNet::BitStream* stream) {
 void NetworkedCar::WriteUpdate(RakNet::BitStream* stream) {
 	stream->Write(Position);
 	stream->Write(Velocity);
-	stream->Write(VisualRotation);
+	stream->Write(Rotation);
 }
 
 void NetworkedCar::ReadUpdate(RakNet::BitStream* stream) {
     stream->Read(Position);
     stream->Read(Velocity);
-    stream->Read(VisualRotation);
+    stream->Read(Rotation);
 }

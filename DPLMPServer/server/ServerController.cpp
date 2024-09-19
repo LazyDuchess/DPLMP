@@ -9,6 +9,7 @@ ServerController::ServerController() {
 	Server = nullptr;
 	_timeController = new TimeController();
 	_carController = new CarController();
+	_characterController = new CharacterController();
 	Clients = std::map<RakNet::RakNetGUID, Client*>();
 }
 
@@ -42,6 +43,7 @@ void ServerController::HandleClientDisconnected(RakNet::RakNetGUID guid) {
 void ServerController::HandleClientConnected(RakNet::RakNetGUID guid) {
 	Clients.insert(std::pair<RakNet::RakNetGUID, Client*>(guid, new Client(guid)));
 	_carController->HandleClientConnected(Clients[guid]);
+	_characterController->HandleClientConnected(Clients[guid]);
 }
 
 void ServerController::HandlePackets() {
@@ -63,6 +65,10 @@ void ServerController::HandlePackets() {
 		case ID_CARCONTROLLER_UPDATE:
 			_carController->HandlePacket(packet);
 			break;
+		case ID_CHARACTERCONTROLLER_FULLSTATE:
+		case ID_CHARACTERCONTROLLER_UPDATE:
+			_characterController->HandlePacket(packet);
+			break;
 		}
 	}
 }
@@ -71,6 +77,7 @@ void ServerController::Step() {
 	HandlePackets();
 	_timeController->Step();
 	_carController->Step();
+	_characterController->Step();
 }
 
 void ServerController::Send(const RakNet::BitStream* bitStream, RakNet::RakNetGUID clientGuid, PacketPriority priority, PacketReliability reliability, char orderingChannel) {

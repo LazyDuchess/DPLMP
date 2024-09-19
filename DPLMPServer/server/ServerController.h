@@ -3,6 +3,7 @@
 #include "TimeController.h"
 #include "Client.h"
 #include "CarController.h"
+#include "CharacterController.h"
 #include <map>
 
 class ServerController {
@@ -24,4 +25,5 @@ private:
 	void HandlePackets();
 	TimeController* _timeController;
 	CarController* _carController;
+	CharacterController* _characterController;
 };
