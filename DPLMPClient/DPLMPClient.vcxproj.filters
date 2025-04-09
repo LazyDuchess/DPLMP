@@ -205,6 +205,7 @@
     <ClInclude Include="dplmp\CharacterController.h" />
     <ClInclude Include="dplmp\NetworkedCharacter.h" />
     <ClInclude Include="dplmp\ExtrasController.h" />
+    <ClInclude Include="dplmp\ResourceManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dplmp\Core.cpp">
